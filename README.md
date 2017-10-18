@@ -1,1 +1,1 @@
-"# MangaWeb" 
+# MangaWeb
