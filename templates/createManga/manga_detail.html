@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ manga.title }}{% endblock title %}
+
+{% block stylesheet %}
+
+{% endblock stylesheet %}
+
+
+{% block tittle %}
+{% endblock %}
+
+{% block content %}
+<h1>{{ manga.title }}</h1>
+<p>{{ manga.author }}</p>
+<p>{{manga.description}}</p>
+<p>{{ manga.published_date }}</p>
+<p>{{ manga.state }}</p>
+{% endblock %}
