@@ -3,4 +3,6 @@
 {% block content %}
 <h1>Hola amantes del manga</h1>
 {{ user.username }}
+
+<a href="{% url "createManga:list_of_mangas"  %}">Lista de mangas</a>
 {% endblock content %}

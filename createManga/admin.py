@@ -6,14 +6,15 @@ from .models import Manga, Comment
 @admin.register(Manga)
 class AdminModel(admin.ModelAdmin):
     list_display = ['id', 'author', 'title', 'description', 'published_date']
-    list_display_links = ['author']
+    list_display_links = ['id']
     list_filter = ['author__username', 'published_date']
     list_editable = []
     search_fields = ['author__username', 'title']
+    ordering = ["id"]
 
     class Meta:
         model = Manga
-
+        
 @admin.register(Comment)
 class AdminComment(admin.ModelAdmin):
     list_display = ['manga', 'author']

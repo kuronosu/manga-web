@@ -8,10 +8,12 @@
 
 {% block content %}
 
+<a href="{% url "createManga:manga_add"  %}">Añadir manga</a>
+
 <ul class="lista">
   {% for mng in mangas_list %}
     <li>
-        <a href="{% url "createManga:manga_detail" slug='manga_1' id=mng.id  %}">{{ mng.title }}</a>
+        <a href="{% url "createManga:manga_detail" slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
         <p>{{ mng.author }}</p>
         <p>{{ mng.description }}</p>
         <p>{{ mng.published_date }}</p>
@@ -40,4 +42,4 @@ Ir a página {{ page_obj.next_page_number }}
 </a>
 {% endif %}
 
-{% endblock %}
+{% endblock content %}
