@@ -6,5 +6,5 @@ urlpatterns = [
     url(r'^$',views.HomeView.as_view(),name = 'home'),
     url(r'^mangas/$', views.MangaListView.as_view(), name = 'list_of_mangas'),
     url(r'^mangas/view/(?P<slug>[-\w]+)/(?P<manga_id>[0-9]+)$', views.MangaDetailView.as_view(), name = 'manga_detail'),
-    url(r'^mangas/add$', views.MangaAddView, name = 'manga_add'),
+    url(r'^mangas/add$', views.ClassMangaAddView.as_view(), name = 'manga_add'),
 ]

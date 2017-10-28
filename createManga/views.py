@@ -70,6 +70,11 @@ def MangaAddView(request):
             manga = Manga.objects.create(author = author, title = title, description = description, state = state)
             #manga.save()
             return HttpResponseRedirect('/')
+        else:
+            form = MangaRegistrationForm(request.POST, request.FILES)
+            context = {'form': form}
+            template = loader.get_template('createManga/manga_add.html')
+            return HttpResponse(template.render(context, request))
     else:
         form = MangaRegistrationForm()
     template = loader.get_template('createManga/manga_add.html')
@@ -77,3 +82,27 @@ def MangaAddView(request):
         'form': form
     }
     return HttpResponse(template.render(context, request))
+
+#Vista MangaAddView creada con clases, pero sin heredar de CreateView
+class ClassMangaAddView(View):
+    def get(self, request):
+        form = MangaRegistrationForm()
+        context = {'form': form}
+        template = loader.get_template('createManga/manga_add.html')
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        form = MangaRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            state = request.POST.get('state')
+            author = request.user
+            
+            manga = Manga.objects.create(author = author, title = title, description = description, state = state)
+            #manga.save()
+            return HttpResponseRedirect('/')
+        else:
+            form = MangaRegistrationForm(request.POST, request.FILES)
+            context = {'form': form}
+            template = loader.get_template('createManga/manga_add.html')
+            return HttpResponse(template.render(context, request))
