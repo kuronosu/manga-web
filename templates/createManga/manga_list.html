@@ -17,15 +17,7 @@
         <p>{{ mng.author }}</p>
         <p>{{ mng.description }}</p>
         <p>{{ mng.published_date }}</p>
-        {% if mng.state == 1 %}
-            <p>En emision</p>
-        {% endif %}
-        {% if mng.state == 2 %}
-            <p>Suspendido</p>
-        {% endif %}
-        {% if mng.state == 3 %}
-            <p>Finalizado</p>
-        {% endif %}
+        <p>{{ mng.state }}</p>
     </li>
   {% endfor %}
 </ul>

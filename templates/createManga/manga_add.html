@@ -8,7 +8,9 @@
 <h1>New Manga</h1>
 <form class="" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  {{ form.as_p }}
+  <ul>
+      {% include "createManga/form_snippets.html" %}
+  </ul>
   <button type="submit" name="button">Submit</button>
 </form>
 {% endblock %}

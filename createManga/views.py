@@ -2,11 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, ListView, DetailView
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import FormView
 from django.views.generic.edit import CreateView
-from django.core.urlresolvers import reverse_lazy
 from django.template import loader
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Manga
 from .forms import MangaRegistrationForm
@@ -30,79 +29,16 @@ class MangaDetailView(DetailView):
         query = super(MangaDetailView, self).get_queryset()
         return query.filter()
 
-#Esta clase no tine uso de momento, tiene por objetivo el hacer la vista de MangaAddView con clases y no con funciones
-class classMangaAddView(CreateView):
+#Vista MangaAddView creada con clases heredando de CreateView
+class MangaAddView(LoginRequiredMixin, CreateView):
+    login_url = '/admin/login'
     model = Manga
     template_name = 'createManga/manga_add.html'
     form_class = MangaRegistrationForm
     success_url = '/'
 
-    def get_context_data(self, **kwargs):
-        # Llamamos ala implementacion primero del  context
-        context = super(MangaAddView, self).get_context_data(**kwargs)
-        # Agregamos el author
-        context['author'] = self.request.user.id
-        return context
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        self.object = form.save()
 
-    def get_form_kwargs(self):
-        kwargs = super(MangaAddView, self).get_form_kwargs()
-        if self.request.method in ('POST', 'PUT'):
-            kwargs.update({
-                'data': self.request.POST,
-                'files': self.request.FILES,
-            })
-            #kwargs['data'].add({'author': self.request.user})
-            print(kwargs['data'])
-        # if kwargs['data']:
-        #     kwargs.update({'data': {'author': self.request.user.id} } )
-        return kwargs
-
-@login_required()
-def MangaAddView(request):
-    if request.method == 'POST':
-        form = MangaRegistrationForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = request.POST.get('title')
-            description = request.POST.get('description')
-            state = request.POST.get('state')
-            author = request.user
-            
-            manga = Manga.objects.create(author = author, title = title, description = description, state = state)
-            #manga.save()
-            return HttpResponseRedirect('/')
-        else:
-            form = MangaRegistrationForm(request.POST, request.FILES)
-            context = {'form': form}
-            template = loader.get_template('createManga/manga_add.html')
-            return HttpResponse(template.render(context, request))
-    else:
-        form = MangaRegistrationForm()
-    template = loader.get_template('createManga/manga_add.html')
-    context = {
-        'form': form
-    }
-    return HttpResponse(template.render(context, request))
-
-#Vista MangaAddView creada con clases, pero sin heredar de CreateView
-class ClassMangaAddView(View):
-    def get(self, request):
-        form = MangaRegistrationForm()
-        context = {'form': form}
-        template = loader.get_template('createManga/manga_add.html')
-        return HttpResponse(template.render(context, request))
-    def post(self, request):
-        form = MangaRegistrationForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = request.POST.get('title')
-            description = request.POST.get('description')
-            state = request.POST.get('state')
-            author = request.user
-            
-            manga = Manga.objects.create(author = author, title = title, description = description, state = state)
-            #manga.save()
-            return HttpResponseRedirect('/')
-        else:
-            form = MangaRegistrationForm(request.POST, request.FILES)
-            context = {'form': form}
-            template = loader.get_template('createManga/manga_add.html')
-            return HttpResponse(template.render(context, request))
+        return HttpResponseRedirect(self.get_success_url())

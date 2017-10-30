@@ -1,17 +1,7 @@
 from django import forms
-from .models import Manga
+from .models import Manga, Gender
 
 class MangaRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Manga
-        # fields = '__all__'
-        fields = ['title', 'description', 'state']
-        widgets = {
-            'title': forms.TextInput(
-                attrs = {'class': 'form-control', 'required': True, 'placeholder': 'Titulo del manga'}
-            ),
-            #'author': forms.HiddenInput(attrs = {}),
-        }
 
     def __init__(self, *args, **kwargs):
         super(MangaRegistrationForm, self).__init__(*args, **kwargs)    
@@ -20,6 +10,16 @@ class MangaRegistrationForm(forms.ModelForm):
                 'class': 'form-control', 
                 'required': True
             }
+
+    class Meta:
+        model = Manga
+        # fields = '__all__'
+        fields = ['title', 'description', 'state', 'genders']
+        widgets = {
+            'title': forms.TextInput(
+                attrs = {'placeholder': 'Titulo del manga'}
+            ),
+        }
         # self.fields['title'].widget.attrs = {
         #     'placeholder': 'Titulo del manga'
         # }
