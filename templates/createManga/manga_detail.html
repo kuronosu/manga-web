@@ -12,5 +12,9 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
-<p>{{ manga.genders }}</p>
+<ol>
+  {% for i in manga.genders.all %}
+  <li>{{ i }}</li>
+  {% endfor %}
+</ol>
 {% endblock content %}

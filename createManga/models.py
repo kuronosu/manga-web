@@ -7,67 +7,79 @@ from django.conf import settings
 
 class Gender(models.Model):
     GENDER_CHOICES = (
-        ('Acción', 'Acción',),
-        ('Apocalíptico', 'Apocalíptico',),
-        ('Artes Marciales', 'Artes Marciales',),
-        ('Aventura', 'Aventura',),
-        ('Ciencia Ficción', 'Ciencia Ficción',),
-        ('Comedia', 'Comedia',),
-        ('Cyberpunk', 'Cyberpunk',),
-        ('Demonios', 'Demonios',),
-        ('Deportes', 'Deportes',),
-        ('Drama', 'Drama',),
-        ('Ecchi', 'Ecchi',),
-        ('Fantasía', 'Fantasía',),
-        ('Gender Bender', 'Gender Bender',),
-        ('Gore', 'Gore',),
-        ('Harem', 'Harem',),
-        ('Histórico', 'Histórico',),
-        ('Horror', 'Horror',),
-        ('Magia', 'Magia',),
-        ('Mecha', 'Mecha',),
-        ('Militar', 'Militar',),
-        ('Misterio', 'Misterio',),
-        ('Musical', 'Musical',),
-        ('Parodia', 'Parodia',),
-        ('Policial', 'Policial',),
-        ('Psicológico', 'Psicológico',),
-        ('Realidad Virtual', 'Realidad Virtual',),
-        ('Recuentos de la vida', 'Recuentos de la vida',),
-        ('Reencarnación', 'Reencarnación',),
-        ('Romance', 'Romance',),
-        ('Samurai', 'Samurai',),
-        ('Sobrenatural', 'Sobrenatural',),
-        ('Super Poderes', 'Super Poderes',),
-        ('Supervivencia', 'Supervivencia',),
-        ('Suspense', 'Suspense',),
-        ('Tragedia', 'Tragedia',),
-        ('Vampiros', 'Vampiros',),
-        ('Vida Escolar', 'Vida Escolar',),
-        ('Yaoi', 'Yaoi',),
-        ('Yuri', 'Yuri',),
+        (1, 'Acción',),
+        (2, 'Apocalíptico',),
+        (3, 'Artes Marciales',),
+        (4, 'Aventura',),
+        (5, 'Ciencia Ficción',),
+        (6, 'Comedia',),
+        (7, 'Cyberpunk',),
+        (8, 'Demonios',),
+        (9, 'Deportes',),
+        (10, 'Drama',),
+        (11, 'Ecchi',),
+        (12, 'Fantasía',),
+        (13, 'Gender Bender',),
+        (14, 'Gore',),
+        (15, 'Harem',),
+        (16, 'Histórico',),
+        (17, 'Horror',),
+        (18, 'Magia',),
+        (19, 'Mecha',),
+        (20, 'Militar',),
+        (21, 'Misterio',),
+        (22, 'Musical',),
+        (23, 'Parodia',),
+        (24, 'Policial',),
+        (25, 'Psicológico',),
+        (26, 'Realidad Virtual',),
+        (27, 'Recuentos de la vida',),
+        (28, 'Reencarnación',),
+        (29, 'Romance',),
+        (30, 'Samurai',),
+        (31, 'Sobrenatural',),
+        (32, 'Super Poderes',),
+        (33, 'Supervivencia',),
+        (34, 'Suspense',),
+        (35, 'Tragedia',),
+        (36, 'Vampiros',),
+        (37, 'Vida Escolar',),
+        (38, 'Yaoi',),
+        (39, 'Yuri',),
     )
-    gender = models.CharField(max_length = 20, choices = GENDER_CHOICES, unique = True, blank=True, null=True)
+    gender = models.IntegerField(choices = GENDER_CHOICES, unique = True,validators = [MinValueValidator(1), MaxValueValidator(39)])
+    name = models.CharField(max_length = 20, default = 'DEFAULT')
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.name = self.GENDER_CHOICES[self.gender - 1][1]
+            super(Gender, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.gender
+        return self.name
     def __unicode__(self):
-        return self.gender
+        return self.name
 
 class State(models.Model):
     STATE_CHOICES = (
-        ('Emision', 'Emision'),
-        ('Finalizado', 'Finalizado'),
-        ('Pausado', 'Pausado'),
-        ('Cancelado', 'Cancelado'),
+        (1, 'Emision'),
+        (2, 'Finalizado'),
+        (3, 'Pausado'),
+        (4, 'Cancelado'),
     )
-    state = models.CharField(max_length = 10, choices = STATE_CHOICES, unique = True, blank=True, null=True)
+    state = models.IntegerField(choices = STATE_CHOICES, unique = True,validators = [MinValueValidator(1), MaxValueValidator(4)])
+    name = models.CharField(max_length = 10, default = 'DEFAULT')
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.name = self.STATE_CHOICES[self.state - 1][1]
+            super(State, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.state
+        return self.name
 
     def __unicode__(self):
-        return self.state
+        return self.name
 
 class Manga(models.Model):
     #author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -83,18 +95,18 @@ class Manga(models.Model):
         if not self.id:
             self.slug = defaultfilters.slugify(self.title)
             super(Manga, self).save(*args, **kwargs)
-    
+
     # periodicity = models.Integerfield()
 
     def addChapter():
         pass
-    
+
     def addComment():
         pass
-    
+
     def __str__(self):
         return self.title
-        
+
     def __unicode__(self):
         return self.title
 
@@ -116,7 +128,7 @@ class Chapter(models.Model):
     manga = models.ForeignKey(Manga)
 
     def __str__(self):
-        return 
+        return
 
     def __unicode__(self):
-        return 
+        return

@@ -17,7 +17,7 @@ class AdminManga(admin.ModelAdmin):
 
 @admin.register(Gender)
 class AdminGender(admin.ModelAdmin):
-    list_display = ['id', 'gender']
+    list_display = ['id', 'gender', 'name']
     list_display_links = ['id']
     list_filter = ['gender']
     list_editable = []
@@ -29,7 +29,7 @@ class AdminGender(admin.ModelAdmin):
 
 @admin.register(State)
 class AdminState(admin.ModelAdmin):
-    list_display = ['id', 'state']
+    list_display = ['id', 'state', 'name']
     list_display_links = ['id']
     list_filter = ['state']
     list_editable = []
