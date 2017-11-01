@@ -15,7 +15,7 @@ class HomeView(TemplateView):
 
 class MangaListView(ListView):
     model = Manga
-    template_name = 'createManga/manga_list.html'
+    template_name = 'manageManga/manga_list.html'
     context_object_name = 'mangas_list'
     paginate_by = 5
 
@@ -23,7 +23,7 @@ class MangaDetailView(DetailView):
     model = Manga
     pk_url_kwarg = 'manga_id'
     slug_url_kwarg = 'slug'
-    template_name = 'createManga/manga_detail.html'
+    template_name = 'manageManga/manga_detail.html'
 
     def get_queryset(self):
         query = super(MangaDetailView, self).get_queryset()
@@ -33,7 +33,7 @@ class MangaDetailView(DetailView):
 class MangaAddView(LoginRequiredMixin, CreateView):
     login_url = '/admin/login'
     model = Manga
-    template_name = 'createManga/manga_add.html'
+    template_name = 'manageManga/manga_add.html'
     form_class = MangaRegistrationForm
     success_url = '/'
 
@@ -45,7 +45,7 @@ class MangaAddView(LoginRequiredMixin, CreateView):
 
 class MangaFilterView(ListView):
     model = Manga
-    template_name = 'createManga/manga_list_filter.html'
+    template_name = 'manageManga/manga_list_filter.html'
     context_object_name = 'mangas_list'
     paginate_by = 5
 

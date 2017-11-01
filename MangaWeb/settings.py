@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     #'user_accounts.apps.UserAccountsConfig',
-    'createManga.apps.CreatemangaConfig',
+    'manageManga.apps.ManagemangaConfig',
 
 
     #'phonenumber_field',

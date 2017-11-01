@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Hola amantes del manga</h1>
-{{ user.username }}
+{% if user %}
+<h2> Bienvenido {{ user.username }}! </h2>
+{% endif %}
 
-<a href="{% url "createManga:list_of_mangas"  %}">Lista de mangas</a>
+<a href="{% url 'manageManga:list_of_mangas'  %}">Lista de mangas</a>
 {% endblock content %}

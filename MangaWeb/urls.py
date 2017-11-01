@@ -20,5 +20,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('createManga.urls', namespace='createManga'))
+    url(r'^', include('manageManga.urls', namespace='manageManga'))
 ] #+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

@@ -8,12 +8,12 @@
 
 {% block content %}
 
-<a href="{% url "createManga:manga_add"  %}">Añadir manga</a>
+<a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
 
 <ul class="lista">
   {% for mng in mangas_list %}
     <li>
-        <a href="{% url "createManga:manga_detail" slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
+        <a href="{% url 'manageManga:manga_detail' slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
         <p>{{ mng.author }}</p>
         <p>{{ mng.description }}</p>
         <p>{{ mng.published_date }}</p>
@@ -23,13 +23,13 @@
 </ul>
 
 {% if page_obj.has_previous %}
-<a href="{% url 'createManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}">
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}">
 Ir a página {{ page_obj.previous_page_number }}
 </a>
 {% endif %}
 La página actual es {{ page_obj.number }}
 {% if page_obj.has_next %}
-<a href="{% url 'createManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}">
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}">
 Ir a página {{ page_obj.next_page_number }}
 </a>
 {% endif %}
