@@ -64,13 +64,12 @@ class MangaFilterView(FormMixin, ListView):
             except Exception as e:
                 query = query.filter(state__name = state)
         if genders:
-            max_genders(genders)
+            # max_genders(genders)
             try:
-                for i in genders:
-                    query = query.filter(genders__gender = int(i))
+                query = query.filter(genders__gender__in = genders)
+                query = list(set(query))
             except Exception as e:
-                for i in genders:
-                    query = query.filter(genders__name = i)
+                query = query.filter(genders__name__in = genders)
 
         return query
 
