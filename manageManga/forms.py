@@ -1,5 +1,6 @@
 from django import forms
-from .models import Manga, Gender
+from .models import Manga, Gender, State
+from .validations import max_genders
 
 class MangaRegistrationForm(forms.ModelForm):
 
@@ -35,3 +36,27 @@ class MangaRegistrationForm(forms.ModelForm):
         #         attrs={'id': 'manga-text', 'required': True, 'placeholder': 'Titulo del manga'}
         #     ),
         # }
+
+class FilterForm(forms.Form):
+    class Meta:
+        fields = ['genders', 'state']
+    
+    genders = forms.MultipleChoiceField(
+        choices = Gender.GENDER_CHOICES,
+        widget  = forms.CheckboxSelectMultiple,
+        validators = [max_genders],
+    )
+    state = forms.ChoiceField(choices = State.STATE_CHOICES,)
+
+    def __init__(self, *args, **kwargs):
+        super(FilterForm, self).__init__(*args, **kwargs)
+        self.fields['genders'].widget.attrs = {
+            'onchange': 'validacion()'
+            }
+
+    def clean_genders(self, *args, **kwargs):
+        genders = self.cleaned_data
+        if genders:
+            if len(genders) > 6:
+                self.add_error('genders', 'Seleciono demasiados generos')
+        return genders

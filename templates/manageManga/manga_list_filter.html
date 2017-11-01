@@ -8,7 +8,21 @@
 
 {% block content %}
 
-<a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
+<div class="filter_form">
+  <form action="?" method="get" name="filter_form">
+    {% comment %} <div id="checkbox_div">
+      <p>Estado:</p>
+      {{ form.state }}
+    </div>
+    <div class="gender_checkbox_list">
+      Generos:
+      {{ form.genders }}
+      {{ form.genders.errors }}
+    </div> {% endcomment %}
+    {{form.as_p}}
+    <button type="submit">a</button>
+  </form>
+</div>
 
 <ul class="lista">
   {% for mng in mangas_list %}
