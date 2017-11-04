@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Manga, Comment, Gender, State
+from .models import Manga, Comment, Genre, State
 
 # Register your models here.
 
@@ -7,7 +7,7 @@ from .models import Manga, Comment, Gender, State
 class AdminManga(admin.ModelAdmin):
     list_display = ['id', 'author', 'title', 'description', 'published_date']
     list_display_links = ['id']
-    list_filter = ['author__username', 'published_date', 'state', 'genders']
+    list_filter = ['author__username', 'published_date', 'state', 'genres']
     list_editable = []
     search_fields = ['author__username', 'title']
     ordering = ["id"]
@@ -15,17 +15,17 @@ class AdminManga(admin.ModelAdmin):
     class Meta:
         model = Manga
 
-@admin.register(Gender)
-class AdminGender(admin.ModelAdmin):
-    list_display = ['id', 'gender', 'name']
+@admin.register(Genre)
+class AdminGenre(admin.ModelAdmin):
+    list_display = ['id', 'genre', 'name']
     list_display_links = ['id']
-    list_filter = ['gender']
+    list_filter = ['genre']
     list_editable = []
-    search_fields = ['gender']
+    search_fields = ['genre']
     ordering = ["id"]
 
     class Meta:
-        model = Gender
+        model = Genre
 
 @admin.register(State)
 class AdminState(admin.ModelAdmin):

@@ -2,11 +2,12 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.template import defaultfilters
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
-class Gender(models.Model):
-    GENDER_CHOICES = (
+class Genre(models.Model):
+    GENRE_CHOICES = (
         (1, 'Acción',),
         (2, 'Apocalíptico',),
         (3, 'Artes Marciales',),
@@ -47,13 +48,13 @@ class Gender(models.Model):
         (38, 'Yaoi',),
         (39, 'Yuri',),
     )
-    gender = models.IntegerField(choices = GENDER_CHOICES, unique = True,validators = [MinValueValidator(1), MaxValueValidator(39)])
+    genre = models.IntegerField(choices = GENRE_CHOICES, unique = True,validators = [MinValueValidator(1), MaxValueValidator(39)])
     name = models.CharField(max_length = 20, default = 'DEFAULT')
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.name = self.GENDER_CHOICES[self.gender - 1][1]
-            super(Gender, self).save(*args, **kwargs)
+            self.name = self.GENRE_CHOICES[self.genre - 1][1]
+            super(Genre, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -83,13 +84,13 @@ class State(models.Model):
 
 class Manga(models.Model):
     #author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL)
-    title = models.CharField(max_length = 100)
-    description = models.TextField(max_length = 700)
-    published_date = models.DateField(auto_now_add = True, auto_now = False)
-    state = models.ForeignKey(State)
-    slug = models.SlugField(max_length=100, default = defaultfilters.slugify(title))
-    genders = models.ManyToManyField(Gender, blank=False)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
+    title = models.CharField(max_length = 100, verbose_name=_('Title'))
+    description = models.TextField(max_length = 700, verbose_name=_('Description'))
+    published_date = models.DateField(auto_now_add = True, auto_now = False, verbose_name=_('Published Date'))
+    state = models.ForeignKey(State, verbose_name=_('State'))
+    slug = models.SlugField(max_length=100, default = defaultfilters.slugify(title), verbose_name=_('Slug'))
+    genres = models.ManyToManyField(Genre, verbose_name=_('Genres'))
 
     def save(self, *args, **kwargs):
         if not self.id:

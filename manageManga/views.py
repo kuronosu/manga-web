@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404
 from django.views.generic import View, ListView, DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
@@ -10,7 +11,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Manga
 from .forms import MangaRegistrationForm, FilterForm
-from .validations import max_genders
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -56,20 +56,19 @@ class MangaFilterView(FormMixin, ListView):
         query = super(MangaFilterView, self).get_queryset()
         search = self.request.GET.get('search', False)
         state = self.request.GET.get('state', False)
-        genders = self.request.GET.getlist('genders', False)
+        genres = self.request.GET.getlist('genres', False)
         published_date = self.request.GET.get('published_date', False)
         if state:
             try:
                 query = query.filter(state__state = int(state))
             except Exception as e:
                 query = query.filter(state__name = state)
-        if genders:
-            # max_genders(genders)
+        if genres:
             try:
-                query = query.filter(genders__gender__in = genders)
+                query = query.filter(genres__genre__in = genres)
                 query = list(set(query))
             except Exception as e:
-                query = query.filter(genders__name__in = genders)
+                query = query.filter(genres__name__in = genres)
 
         return query
 
