@@ -92,10 +92,9 @@ class Manga(models.Model):
     slug = models.SlugField(max_length=100, default = defaultfilters.slugify(title), verbose_name=_('Slug'))
     genres = models.ManyToManyField(Genre, verbose_name=_('Genres'))
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = defaultfilters.slugify(self.title)
-            super(Manga, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):    
+        self.slug = defaultfilters.slugify(self.title)
+        super(Manga, self).save(*args, **kwargs)
 
     # periodicity = models.Integerfield()
 

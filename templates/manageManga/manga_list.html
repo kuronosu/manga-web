@@ -6,10 +6,35 @@
 
 {% endblock stylesheet %}
 
+{% block header %}
+<div class="search">
+    <form method="get" action="{% url 'manageManga:manga_filter' %}">
+      {{ search_form.slug }}
+      <button type="submit"><b>Search</b></button>
+    </form>
+  </div>
+{% endblock header %}
+
 {% block content %}
 
-<a href="{% url 'manageManga:manga_filter' %}">filtro</a>
 <a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
+
+<div class="filter_form">
+  <form method="get" action="{% url 'manageManga:manga_filter' %}" name="filter_form">
+    <div id="state_div">
+      {{ filter_form.state.label_tag }}
+      {{ filter_form.state.errors }}
+      {{ filter_form.state }}
+    </div>
+    <div class="gender_div">
+      {{ filter_form.genres.label_tag }}
+      {{ filter_form.genres }}
+      {{ filter_form.genres.errors }}
+    </div>
+    <button type="submit">Filter</button>
+  </form>
+</div>
+  
 
 <ul class="lista">
   {% for mng in mangas_list %}
@@ -19,7 +44,8 @@
         <p>{{ mng.description }}</p>
         <p>{{ mng.published_date }}</p>
         <p>{{ mng.state.name }}</p>
-    </li><hr><br>
+    </li>
+    <hr><br>
   {% endfor %}
 </ul>
 
