@@ -8,6 +8,7 @@
 
 {% block content %}
 
+<a href="{% url 'manageManga:manga_filter' %}">filtro</a>
 <a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
 
 <ul class="lista">
@@ -33,8 +34,5 @@ La página actual es {{ page_obj.number }}
 Ir a página {{ page_obj.next_page_number }}
 </a>
 {% endif %}
-
-
-<a href="{% url 'manageManga:manga_filter' %}">filtro</a>
 
 {% endblock content %}

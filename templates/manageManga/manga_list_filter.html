@@ -9,17 +9,19 @@
 {% block content %}
 
 <div class="filter_form">
-  <form action="?" method="get" name="filter_form">
-    {% comment %} <div id="checkbox_div">
-      <p>Estado:</p>
+  <form method="get" name="filter_form">
+    <div id="state_div">
+      {{ form.state.label_tag }}
+      {{ form.state.errors }}
       {{ form.state }}
     </div>
-    <div class="gender_checkbox_list">
-      Generos:
-      {{ form.genders }}
-      {{ form.genders.errors }}
-    </div> {% endcomment %}
-    {{form.as_p}}
+    <div class="gender_div">
+      {{ form.genres.label_tag }}
+      {{ form.genres }}
+      {{ form.genres.errors }}
+    </div>
+    
+    <!-- {{form.as_p}} -->
     <button type="submit">a</button>
   </form>
 </div>
