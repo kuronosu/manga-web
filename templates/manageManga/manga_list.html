@@ -8,7 +8,7 @@
 
 {% block header %}
 <div class="search">
-    <form method="get" action="{% url 'manageManga:manga_filter' %}">
+    <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
       {{ search_form.slug }}
       <button type="submit"><b>Search</b></button>
     </form>
@@ -20,7 +20,7 @@
 <a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
 
 <div class="filter_form">
-  <form method="get" action="{% url 'manageManga:manga_filter' %}" name="filter_form">
+  <form method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">
     <div id="state_div">
       {{ filter_form.state.label_tag }}
       {{ filter_form.state.errors }}

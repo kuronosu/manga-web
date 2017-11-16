@@ -17,4 +17,13 @@
   <li>{{ i }}</li>
   {% endfor %}
 </ol>
+{% if perms.manageManga.add_manga %}
+<a href="">BBBBBBBBBBBBBBBB</a>
+{% else %}
+{% endif %}
+{% if user.id == manga.author.id %}
+<a href="">AAAAAAAAAAAAAAA</a>
+{% else %}
+
+{% endif %}
 {% endblock content %}

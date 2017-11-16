@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.views import login
 # from django.conf import settings
 # from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('manageManga.urls', namespace='manageManga'))
+    url(r'^', include('manageManga.urls', namespace='manageManga')),
+    url(r'^login/', login,{'template_name': 'login.html'}, name='login')
 ] #+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

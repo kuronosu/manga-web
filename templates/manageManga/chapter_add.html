@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Añadir capitulo{% endblock title %}
+
+{% block content %}
+<h1>New Manga</h1>
+<form class="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <ul>
+      {% include "manageManga/form_snippets.html" %}
+  </ul>
+  <button type="submit" name="button">Submit</button>
+</form>
+{% endblock %}

@@ -6,6 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/manga/chapter/user_<id>/<filename>
+    return 'manga/chapter/user_{0}/{1}'.format(instance.owner.id, filename)
+
 class Genre(models.Model):
     GENRE_CHOICES = (
         (1, 'Acción',),
@@ -92,7 +96,7 @@ class Manga(models.Model):
     slug = models.SlugField(max_length=100, default = defaultfilters.slugify(title), verbose_name=_('Slug'))
     genres = models.ManyToManyField(Genre, verbose_name=_('Genres'))
 
-    def save(self, *args, **kwargs):    
+    def save(self, *args, **kwargs):
         self.slug = defaultfilters.slugify(self.title)
         super(Manga, self).save(*args, **kwargs)
 
@@ -126,6 +130,8 @@ class Comment(models.Model):
 
 class Chapter(models.Model):
     manga = models.ForeignKey(Manga)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
+    content = models.FileField(upload_to=user_directory_path)
 
     def __str__(self):
         return

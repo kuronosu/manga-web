@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Manga, Comment, Genre, State
+from .models import Manga, Comment, Genre, State, Chapter
 
 # Register your models here.
 
@@ -14,6 +14,18 @@ class AdminManga(admin.ModelAdmin):
 
     class Meta:
         model = Manga
+    
+@admin.register(Chapter)
+class AdminManga(admin.ModelAdmin):
+    list_display = ['id', 'manga', 'owner']
+    list_display_links = ['id']
+    list_filter = ['manga__title', 'owner__username']
+    list_editable = []
+    search_fields = ['owner__username', 'manga__title']
+    ordering = ["id"]
+
+    class Meta:
+        model = Chapter
 
 @admin.register(Genre)
 class AdminGenre(admin.ModelAdmin):

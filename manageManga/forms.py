@@ -1,11 +1,11 @@
 from django import forms
-from .models import Manga, Genre, State
+from .models import Manga, Genre, State, Chapter
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from django.utils.translation import ugettext
 
 def set_field_html_name(obj, new_name):
     """
-    This creates wrapper around the normal widget rendering, 
+    This creates wrapper around the normal widget rendering,
     allowing for a custom field name (new_name).
     """
     old_render = obj.widget.render
@@ -62,7 +62,7 @@ class FilterForm(forms.ModelForm):
             return self.cleaned_data
 
 class SearchForm(forms.ModelForm):
-    
+
     class Meta:
         model = Manga
         fields = ['slug']
@@ -73,3 +73,23 @@ class SearchForm(forms.ModelForm):
         self.fields['slug'].label = _('Search')
         self.fields['slug'].widget.attrs['placeholder'] = _('Search')
         set_field_html_name(self.fields['slug'], 'search')
+
+class ChapterRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = Chapter
+        fields = ['content']
+
+    # def clean(self):
+    #     cleaned_data = super(ChapterRegistrationForm, self).clean()
+
+    #     field_1 = cleaned_data.get('field_1')
+    #     field_2 = cleaned_data.get('field_2')
+    #     field_3 = cleaned_data.get('field_3')
+
+    #     # Values may be None if the fields did not pass previous validations.
+    #     if field_1 is not None and field_2 is not None and field_3 is not None:
+    #         # If fields have values, perform validation:
+    #         if not field_3 == field_1 + field_2:
+    #             # Use None as the first parameter to make it a non-field error.
+    #             # If you feel is related to a field, use this field's name.
+    #             self.add_error(None, ValidationError('field_3 must be equal to the sum of field_1 and filed_2'))
