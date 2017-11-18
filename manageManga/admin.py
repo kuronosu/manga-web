@@ -1,10 +1,10 @@
+"""Admin: Register your models here."""
 from django.contrib import admin
-from .models import Manga, Comment, Genre, State, Chapter
+from .models import Manga, Genre, State, Chapter
 
-# Register your models here.
 
-@admin.register(Manga)
 class AdminManga(admin.ModelAdmin):
+    """Clase para registrar el modelo Manga"""
     list_display = ['id', 'author', 'title', 'description', 'published_date']
     list_display_links = ['id']
     list_filter = ['author__username', 'published_date', 'state', 'genres']
@@ -13,10 +13,11 @@ class AdminManga(admin.ModelAdmin):
     ordering = ["id"]
 
     class Meta:
+        """Meta clase"""
         model = Manga
-    
-@admin.register(Chapter)
-class AdminManga(admin.ModelAdmin):
+
+class AdminChapter(admin.ModelAdmin):
+    """Clase para registrar el modelo Chapter"""
     list_display = ['id', 'manga', 'owner']
     list_display_links = ['id']
     list_filter = ['manga__title', 'owner__username']
@@ -25,10 +26,11 @@ class AdminManga(admin.ModelAdmin):
     ordering = ["id"]
 
     class Meta:
+        """Meta clase"""
         model = Chapter
 
-@admin.register(Genre)
 class AdminGenre(admin.ModelAdmin):
+    """Clase para registrar el modelo Genre"""
     list_display = ['id', 'genre', 'name']
     list_display_links = ['id']
     list_filter = ['genre']
@@ -37,10 +39,11 @@ class AdminGenre(admin.ModelAdmin):
     ordering = ["id"]
 
     class Meta:
+        """Meta clase"""
         model = Genre
 
-@admin.register(State)
 class AdminState(admin.ModelAdmin):
+    """Clase para registrar el modelo State"""
     list_display = ['id', 'state', 'name']
     list_display_links = ['id']
     list_filter = ['state']
@@ -49,15 +52,10 @@ class AdminState(admin.ModelAdmin):
     ordering = ["id"]
 
     class Meta:
+        """Meta clase"""
         model = State
 
-@admin.register(Comment)
-class AdminComment(admin.ModelAdmin):
-    list_display = ['manga', 'author']
-    list_display_links = ['manga']
-    list_filter = ['manga__title', 'author__username']
-    list_editable = []
-    search_fields = ['author__username', 'manga__title']
-
-    class Meta:
-        model = Comment
+admin.site.register(Manga, AdminManga)
+admin.site.register(Chapter, AdminChapter)
+admin.site.register(Genre, AdminGenre)
+admin.site.register(State, AdminState)

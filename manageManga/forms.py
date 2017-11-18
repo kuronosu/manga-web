@@ -1,7 +1,8 @@
+"""Forms: Create your forms here."""
 from django import forms
-from .models import Manga, Genre, State, Chapter
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
-from django.utils.translation import ugettext
+from django.utils.translation import ugettext_lazy as _
+from .models import Manga, Chapter
+# from django.utils.translation import ugettext, ugettext_noop
 
 def set_field_html_name(obj, new_name):
     """
@@ -15,6 +16,7 @@ def set_field_html_name(obj, new_name):
     obj.widget.render = _widget_render_wrapper
 
 class MangaRegistrationForm(forms.ModelForm):
+    """Formulario para la creacion de mangas"""
 
     def __init__(self, *args, **kwargs):
         super(MangaRegistrationForm, self).__init__(*args, **kwargs)
@@ -28,6 +30,7 @@ class MangaRegistrationForm(forms.ModelForm):
         self.fields['genres'].widget.attrs = {'onchange': 'validacion()'}
 
     class Meta:
+        """Meta clase"""
         model = Manga
         fields = ['title', 'description', 'state', 'genres']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
@@ -37,12 +40,15 @@ class MangaRegistrationForm(forms.ModelForm):
         max_genres = 7
         if genres:
             if len(genres) > max_genres:
-                # Translators: Mensaje que aparece cuando se intenta crear un manga con mas de un numero especifico de generos
+                # Translators: Mensaje que aparece cuando
+                # Translators: se intenta crear un manga con mas de un numero especifico de generos
                 self.add_error('genres', _('Select maximum {} geners'.format(max_genres)))
             return self.cleaned_data
 
 class FilterForm(forms.ModelForm):
+    """Formulario para filtrar mangas"""
     class Meta:
+        """Meta clase"""
         model = Manga
         fields = ['genres', 'state']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
@@ -57,13 +63,15 @@ class FilterForm(forms.ModelForm):
         max_genres = 7
         if genres:
             if len(genres) > max_genres:
-                # Translators: Mensaje que aparece cuando se intenta filtar con mas de un numero especifico de generos
+                # Translators: Mensaje que aparece cuando
+                # Translators: se intenta filtar con mas de un numero especifico de generos
                 self.add_error('genres', _('Select maximum {} geners'.format(max_genres)))
             return self.cleaned_data
 
 class SearchForm(forms.ModelForm):
-
+    """Formulario para buscar mangas"""
     class Meta:
+        """Meta clase"""
         model = Manga
         fields = ['slug']
 
@@ -75,7 +83,9 @@ class SearchForm(forms.ModelForm):
         set_field_html_name(self.fields['slug'], 'search')
 
 class ChapterRegistrationForm(forms.ModelForm):
+    """Formulario para la creacion de capitulos"""
     class Meta:
+        """Meta clase"""
         model = Chapter
         fields = ['content']
 
@@ -92,4 +102,4 @@ class ChapterRegistrationForm(forms.ModelForm):
     #         if not field_3 == field_1 + field_2:
     #             # Use None as the first parameter to make it a non-field error.
     #             # If you feel is related to a field, use this field's name.
-    #             self.add_error(None, ValidationError('field_3 must be equal to the sum of field_1 and filed_2'))
+    #             self.add_error(None, ValidationError('text error'))

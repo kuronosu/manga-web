@@ -12,18 +12,15 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
-<ol>
+<ul>
   {% for i in manga.genres.all %}
   <li>{{ i }}</li>
   {% endfor %}
-</ol>
-{% if perms.manageManga.add_manga %}
-<a href="">BBBBBBBBBBBBBBBB</a>
-{% else %}
-{% endif %}
-{% if user.id == manga.author.id %}
-<a href="">AAAAAAAAAAAAAAA</a>
-{% else %}
+</ul>
+<ul>
+  {% for chapter in chapters %}
+  <li>{{ chapter.id }}</li>
+  {% endfor %}
 
-{% endif %}
+</ul>
 {% endblock content %}

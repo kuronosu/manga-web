@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-03 23:18-0500\n"
+"POT-Creation-Date: 2017-11-18 03:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,43 +18,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\MangaWeb\settings.py:128
+#: MangaWeb/settings.py:125
 msgid "Spanish"
 msgstr "Español"
 
-#: .\MangaWeb\settings.py:129
+#: MangaWeb/settings.py:126
 msgid "English"
 msgstr "Ingles"
 
-#. Translators: Mensaje que aparece cuando se intenta crear un manga con mas de un numero especifico de generos
-#: .\manageManga\forms.py:62
+#: manageManga/forms.py:28
+msgid "Titulo del manga"
+msgstr ""
+
+#: manageManga/forms.py:29
+#, fuzzy
+#| msgid "Description"
+msgid "Description del manga"
+msgstr "Descripción"
+
+#. Translators: Mensaje que aparece cuando
+#. Translators: se intenta crear un manga con mas de un numero especifico de generos
+#. Translators: Mensaje que aparece cuando
+#. Translators: se intenta filtar con mas de un numero especifico de generos
+#: manageManga/forms.py:45 manageManga/forms.py:68
 msgid "Select maximum {} geners"
 msgstr "Seleccionar maximo {} generos"
 
-#: .\manageManga\models.py:87
+#: manageManga/forms.py:81 manageManga/forms.py:82
+msgid "Search"
+msgstr ""
+
+#: manageManga/models.py:109 manageManga/models.py:157
 msgid "Author"
 msgstr "Autor"
 
-#: .\manageManga\models.py:88
+#: manageManga/models.py:110
 msgid "Title"
 msgstr "Titulo"
 
-#: .\manageManga\models.py:89
+#: manageManga/models.py:111
 msgid "Description"
 msgstr "Descripción"
 
-#: .\manageManga\models.py:90
+#: manageManga/models.py:115
 msgid "Published Date"
 msgstr "Fecha de Publicación"
 
-#: .\manageManga\models.py:91
+#: manageManga/models.py:117
 msgid "State"
 msgstr "Estado"
 
-#: .\manageManga\models.py:92
+#: manageManga/models.py:121
 msgid "Slug"
 msgstr "Slug"
 
-#: .\manageManga\models.py:93
+#: manageManga/models.py:122
 msgid "Genres"
 msgstr "Generos"
