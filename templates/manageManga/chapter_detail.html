@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if chapter.name %}
+{{ chapter.name }}
+{% else %}
+{{ chapter.user_chapter_number }}
+{% endif %}
+{% endblock title %}
+
+{% block stylesheet %}
+
+{% endblock stylesheet %}
+
+{% block content %}
+<p>{{ chapter.manga }}</p>
+<p>{{ chapter.owner }}</p>
+<img src="/media/{{ chapter.content }}" alt="">
+<p>{{ chapter.user_chapter_number }}</p>
+<p>{{ chapter.name }}</p>
+{% endblock content %}

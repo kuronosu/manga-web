@@ -18,7 +18,7 @@ class AdminManga(admin.ModelAdmin):
 
 class AdminChapter(admin.ModelAdmin):
     """Clase para registrar el modelo Chapter"""
-    list_display = ['id', 'manga', 'owner']
+    list_display = ['id', 'manga', 'owner', 'user_chapter_number']
     list_display_links = ['id']
     list_filter = ['manga__title', 'owner__username']
     list_editable = []

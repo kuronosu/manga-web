@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.template import defaultfilters
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 
 def user_directory_path(instance, filename):
     """
@@ -120,23 +121,43 @@ class Manga(models.Model):
         default=defaultfilters.slugify(title),
         verbose_name=_('Slug'))
     genres = models.ManyToManyField(Genre, verbose_name=_('Genres'))
-    # chapters = ArrayField(models.IntegerField())
-    chapters = []
+    verify = models.BooleanField(default=False, verbose_name=_('Verify'))
 
     def save(self, *args, **kwargs):
         self.slug = defaultfilters.slugify(self.title)
         super(Manga, self).save(*args, **kwargs)
 
-    # periodicity = models.Integerfield()
+    # def add_chapter(self, chapter_id, *args, **kwargs):
+    #     """
+    #     Metodo para añadir capitulos al atributo chapters del modelo Manga
+    #     """
+    #     chapters_instance = self.get_chapters()
+    #     if not chapter_id in chapters_instance:
+    #         chapters_instance.append(chapter_id)
+    #         chapters_instance_str = ''.join(str(e)+';' for e in chapters_instance)
+    #         self.chapters = chapters_instance_str
 
-    def add_chapter(self, chapter_id, *args, **kwargs):
-        """
-        Metodo para añadir capitulos al atributo chapters del modelo Manga
-        """
-        chapters_instance = self.chapters
-        chapters_instance.append(chapter_id)
-        self.chapters = chapters_instance
-        return self, args, kwargs
+    # def get_chapters(self):
+    #     """
+    #     Metodo para obtener los capitulos del atributo chapters del modelo Manga
+    #     """
+    #     chapters_instance = self.chapters
+    #     chapters_instance = chapters_instance.split(';')
+    #     chapters_instance.remove('')
+    #     return chapters_instance
+
+    # def update_chapters(self, *args, **kwargs):
+    #     """
+    #     Metodo para actualizar los capitulos del atributo chapters del modelo Manga
+    #     """
+    #     if kwargs['chapter_id']:
+    #         self.add_chapter(kwargs['chapter_id'])
+    #     self.save(*args, **kwargs)
+
+
+    def get_absolute_url(self):
+        """Retorna la ulr para cada objeto de este modelo"""
+        return reverse('manageManga:manga_detail', kwargs={'slug': self.slug, 'manga_id': self.pk})
 
     def __str__(self):
         return self.title
@@ -156,9 +177,38 @@ class Chapter(models.Model):
     manga = models.ForeignKey(Manga)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
     content = models.FileField(upload_to=user_directory_path)
+    user_chapter_number = models.IntegerField(
+        verbose_name=_('Chapter number'),
+        validators=[MinValueValidator(1)]
+        )
+    name = models.CharField(max_length=100, verbose_name=_('Name'), blank=True)
+#chapter_number=models.IntegerField(default=0,blank=True,null=True,verbose_name=_('Chapter number'))
+
+    # def save(self, *args, **kwargs):
+    #     self._set_manga_chapter()
+    #     super(Chapter, self).save(*args, **kwargs)
+
+    # def _set_manga_chapter(self):
+    #     chapters_of_manga = self.manga.get_chapters()
+    #     chapter_number = self._create_chapter_number(chapters_of_manga)
+    #     self.chapter_number = chapter_number
+
+    # def _create_chapter_number(self, chapters_of_manga):
+    #     number = len(chapters_of_manga)+1
+    #     if not number in chapters_of_manga:
+    #         return int(number)
+    #     else:
+    #         return None
 
     def __str__(self):
         return str(self.manga)
 
     def __unicode__(self):
         return str(self.manga)
+
+    def get_absolute_url(self):
+        """Retorna la ulr para cada objeto de este modelo"""
+        return reverse(
+            'manageManga:chapter_detail',
+            kwargs={'chapter_id': self.pk, 'manga_slug': self.manga.slug, 'manga_id': self.manga.id}
+            )

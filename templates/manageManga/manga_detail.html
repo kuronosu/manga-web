@@ -12,6 +12,7 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
+<p>{{ manga.verify }}</p>
 <ul>
   {% for i in manga.genres.all %}
   <li>{{ i }}</li>
@@ -19,8 +20,12 @@
 </ul>
 <ul>
   {% for chapter in chapters %}
-  <li>{{ chapter.id }}</li>
+  <li> <a href=" {% url 'manageManga:chapter_detail' manga_slug=manga.slug manga_id=manga.id chapter_id=chapter.id %} ">{{chapter.user_chapter_number}}</a> </li>
   {% endfor %}
+
+  {% if add_valid %}
+  <a href="{% url 'manageManga:chapter_add' manga_slug=manga.slug manga_id=manga.id %} ">Añadir capitulo</a>
+  {% endif %}
 
 </ul>
 {% endblock content %}

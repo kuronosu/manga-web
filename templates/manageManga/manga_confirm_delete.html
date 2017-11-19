@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ manga.title }}{% endblock title %}
+
+{% block stylesheet %}
+
+{% endblock stylesheet %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+<p>Are you sure you want to delete "{{ object }}"?</p>
+<input type="submit" value="Confirm" />
+</form>
+{% endblock content %}

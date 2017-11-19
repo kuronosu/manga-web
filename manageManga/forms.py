@@ -87,19 +87,7 @@ class ChapterRegistrationForm(forms.ModelForm):
     class Meta:
         """Meta clase"""
         model = Chapter
-        fields = ['content']
+        fields = ['content', 'user_chapter_number']
 
-    # def clean(self):
-    #     cleaned_data = super(ChapterRegistrationForm, self).clean()
-
-    #     field_1 = cleaned_data.get('field_1')
-    #     field_2 = cleaned_data.get('field_2')
-    #     field_3 = cleaned_data.get('field_3')
-
-    #     # Values may be None if the fields did not pass previous validations.
-    #     if field_1 is not None and field_2 is not None and field_3 is not None:
-    #         # If fields have values, perform validation:
-    #         if not field_3 == field_1 + field_2:
-    #             # Use None as the first parameter to make it a non-field error.
-    #             # If you feel is related to a field, use this field's name.
-    #             self.add_error(None, ValidationError('text error'))
+    def clean(self):
+        return self.cleaned_data
