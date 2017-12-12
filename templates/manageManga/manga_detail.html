@@ -2,9 +2,9 @@
 
 {% block title %}{{ manga.title }}{% endblock title %}
 
-{% block stylesheet %}
+{% block static_files %}
 
-{% endblock stylesheet %}
+{% endblock static_files %}
 
 {% block content %}
 <h1>{{ manga.title }}</h1>
@@ -12,13 +12,20 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
-<p>{{ manga.verify }}</p>
-<ul>
+{% if user.id == manga.author.id %}
+  
+  {% if manga.verify %}
+  <p>Verificado: <input type="checkbox"></p>
+  {% else %}
+  <p>No verificado: <input type="checkbox"></p>
+  {% endif %}
+{% endif %}
+<span>Generos: </span><ul>
   {% for i in manga.genres.all %}
   <li>{{ i }}</li>
   {% endfor %}
 </ul>
-<ul>
+<span>Capitulos: </span><ul>
   {% for chapter in chapters %}
   <li> <a href=" {% url 'manageManga:chapter_detail' manga_slug=manga.slug manga_id=manga.id chapter_id=chapter.id %} ">{{chapter.user_chapter_number}}</a> </li>
   {% endfor %}

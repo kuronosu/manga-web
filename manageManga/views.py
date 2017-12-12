@@ -30,6 +30,9 @@ class HomeView(TemplateView):
     """Vista del home"""
     template_name = "home.html"
 
+"""
+Vistas de los mangas
+"""
 class MangaListAndFilterView(ListView):
     """Vista para listar y filtrar mangas"""
     model = Manga
@@ -42,38 +45,80 @@ class MangaListAndFilterView(ListView):
     }
 
     def get_queryset(self):
-        query = super(MangaListAndFilterView, self).get_queryset()
-        query = query.filter(verify=True)
+        query = super(MangaListAndFilterView, self).get_queryset().filter(verify=True)
         search = self.request.GET.get('search', False)
         state = self.request.GET.get('state', False)
         genres = self.request.GET.getlist('genres', False)
-        published_date = self.request.GET.get('published_date', False)
+        order = self.request.GET.get('order', False)
+        queryset = None
+        if order:
+            if order == '0':
+                pass
+            else:
+                if order == '1':
+                    query = query.order_by('title')
+                if order == '-1':
+                    query = query.order_by('-title')
+                if order == '-2':
+                    query = query.order_by('published_date')
+                if order == '2':
+                    query = query.order_by('-published_date')
         if search:
             query = query.filter(title__icontains=search)
         if state:
             try:
                 query = query.filter(state__state=int(state))
-            except Exception:
-                query = query.filter(state__name=state)
+            except ValueError as _error:
+                pass
         if genres:
             try:
                 query = query.filter(genres__genre__in=genres)
-                query = list(set(query))
-            except Exception:
-                query = query.filter(genres__name__in=genres)
-        return query
+            except ValueError as _error:
+                pass
+
+        queryset = []
+        query_sin_repeticiones = query.in_bulk()
+        for i in query_sin_repeticiones:
+            queryset.append(query_sin_repeticiones[i])
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(MangaListAndFilterView, self).get_context_data(**kwargs)
         if 'filter_form' not in context:
-            context['filter_form'] = self.form_classes['filter_form']()
+            context['filter_form'] = self.form_classes['filter_form'](self.request.GET)
         if 'search_form' not in context:
-            context['search_form'] = self.form_classes['search_form'](initial={'slug': ''})
+            context['search_form'] = self.form_classes['search_form'](self.request.GET, initial={'slug': ''})
+        if 'get_arg' not in context:
+            search = self.request.GET.get('search', False)
+            state = self.request.GET.get('state', False)
+            genres = self.request.GET.getlist('genres', False)
+            order = self.request.GET.get('order', False)
+            args_get = ''
+            if search:
+                args_get += '&search='+search
+            if state:
+                args_get += '&state='+state
+            if genres:
+                for i in genres:
+                    args_get += '&genres='+i
+            if order:
+                args_get += '&order='+order
+            context['args_get'] = args_get
+
         return context
 
-    def form_invalid(self, **kwargs):
-        """form invalid method"""
-        return self.render_to_response(self.get_context_data(**kwargs))
+class MangaAddView(LoginRequiredMixin, CreateView):
+    """Vista de para crear un manga"""
+    login_url = '/login'
+    model = Manga
+    template_name = 'manageManga/manga_add.html'
+    form_class = MangaRegistrationForm
+    # success_url = reverse_lazy('manageManga:list_of_mangas')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(MangaAddView, self).form_valid(form)
 
 class MangaDetailView(DetailView):
     """Vista de detalles de los mangas"""
@@ -91,7 +136,7 @@ class MangaDetailView(DetailView):
             querry = chapters.filter(manga__id=manga.id)
             context['chapters'] = querry
         if 'add_valid' not in context:
-            if manga.author.id == self.request.user.id:
+            if manga.author.id == self.request.user.id or self.request.user.is_staff:
                 context['add_valid'] = True
             else:
                 context['add_valid'] = False
@@ -100,19 +145,6 @@ class MangaDetailView(DetailView):
     def get_queryset(self):
         query = super(MangaDetailView, self).get_queryset()
         return query.filter()
-
-#Vista MangaAddView creada con clases heredando de CreateView
-class MangaAddView(LoginRequiredMixin, CreateView):
-    """Vista de para crear un manga"""
-    login_url = '/login'
-    model = Manga
-    template_name = 'manageManga/manga_add.html'
-    form_class = MangaRegistrationForm
-    # success_url = reverse_lazy('manageManga:list_of_mangas')
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super(MangaAddView, self).form_valid(form)
 
 class MangaUpdateView(LoginRequiredMixin, UpdateView):
     """Vista de para actualizar un manga"""
@@ -132,6 +164,10 @@ class MangaDeleteView(DeleteView):
     query_pk_and_slug = True
     success_url = reverse_lazy('manageManga:list_of_mangas')
 
+"""
+Vistas de los capitulos
+"""
+
 class ChapterAddView(LoginRequiredMixin, CreateView):
     """Vista de para crear un chapitulo de un manga"""
     login_url = '/login'
@@ -146,7 +182,7 @@ class ChapterAddView(LoginRequiredMixin, CreateView):
         manga_slug = self.kwargs['manga_slug']
         manga = get_object_or_404(Manga, id=manga_id)
         if manga.slug == manga_slug:
-            if manga.author.id == self.request.user.id:
+            if manga.author.id == self.request.user.id or self.request.user.is_staff:
                 return super(ChapterAddView, self).get(request)
             else:
                 template = loader.get_template('manageManga/restricted_access.html')
@@ -161,7 +197,6 @@ class ChapterAddView(LoginRequiredMixin, CreateView):
         form.instance.manga = manga
         form.instance.owner = self.request.user
         self.object = form.save()
-        manga.add_chapter(self.object.id)
         return HttpResponseRedirect(self.get_success_url())
 
 class ChapterDetailView(DetailView):
@@ -183,19 +218,10 @@ class ChapterDetailView(DetailView):
         else:
             return render_to_response('404.html', {})
 
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(ChapterDetailView, self).get_context_data(**kwargs)
-    #     return context
-
-    # def get_queryset(self):
-    #     query = super(ChapterDetailView, self).get_queryset()
-    #     return query.filter()
-
 class ProfileView(ListView):
     """Vista para los mangas del usuario logeado"""
     model = Manga
-    template_name = 'manageManga/manga_list.html'
+    template_name = 'manageManga/manga_list_filter.html'
     context_object_name = 'mangas_list'
 
     def get_queryset(self):

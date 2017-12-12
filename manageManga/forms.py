@@ -47,6 +47,13 @@ class MangaRegistrationForm(forms.ModelForm):
 
 class FilterForm(forms.ModelForm):
     """Formulario para filtrar mangas"""
+    CHOICES = [
+        ('0', 'Default'),
+        ('1', 'Name a-z'),
+        ('-1', 'Name z-a'),
+        ('2', 'New'),
+        ('-2', 'Old')
+        ]
     class Meta:
         """Meta clase"""
         model = Manga
@@ -56,7 +63,8 @@ class FilterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].required = False
-        self.fields['genres'].widget.attrs = {'onchange': 'validacion()'}
+        self.fields['order'] = forms.ChoiceField(choices=self.CHOICES, widget=forms.RadioSelect())
+        self.fields['order'].required = False
 
     def clean(self):
         genres = self.cleaned_data.get('genres')

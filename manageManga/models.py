@@ -12,7 +12,7 @@ def user_directory_path(instance, filename):
     Funcion que añade retorna una path segun los datos y usuario y archivo
     """
     # file will be uploaded to MEDIA_ROOT/manga/chapter/user_<id>/<filename>
-    return 'manga/chapter/user_{0}/{1}'.format(instance.owner.id, filename)
+    return 'manga/chapter/user_{0}_{1}/{2}'.format(instance.owner.id, instance.owner.username, filename)
 
 class Genre(models.Model):
     """

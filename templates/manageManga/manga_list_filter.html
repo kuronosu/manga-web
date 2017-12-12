@@ -2,34 +2,11 @@
 
 {% block title %}Lista de mangas{% endblock title %}
 
-{% block stylesheet %}
+{% block static_files %}
 
-{% endblock stylesheet %}
+{% endblock static_files %}
 
 {% block content %}
-<div class="search">
-  <form method="get" action="{% url 'manageManga:manga_filter' %}">
-    {{ search_form.slug }}
-    <button type="submit"><b>Search</b></button>
-  </form>
-</div>
-
-<div class="filter_form">
-  <form method="get" action="{% url 'manageManga:manga_filter' %}" name="filter_form">
-    <div id="state_div">
-      {{ filter_form.state.label_tag }}
-      {{ filter_form.state.errors }}
-      {{ filter_form.state }}
-    </div>
-    <div class="gender_div">
-      {{ filter_form.genres.label_tag }}
-      {{ filter_form.genres }}
-      {{ filter_form.genres.errors }}
-    </div>
-
-    <button type="submit">Filter</button>
-  </form>
-</div>
 
 <ul class="lista">
   {% for mng in mangas_list %}

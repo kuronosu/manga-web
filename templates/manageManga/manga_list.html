@@ -1,62 +1,77 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Lista de mangas{% endblock title %}
 
-{% block stylesheet %}
+{% block static_files %}
+  <link rel="stylesheet" href="{% static 'css/manga_list_filterForm.css' %}">
+  <script src="{% static 'js/manga_list_filterForm.js' %}"></script>
 
-{% endblock stylesheet %}
-
-{% block header %}
-<div class="search">
-    <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
-      {{ search_form.slug }}
-      <button type="submit"><b>Search</b></button>
-    </form>
-  </div>
-{% endblock header %}
+{% endblock static_files %}
 
 {% block content %}
 
 <a href="{% url 'manageManga:manga_add'  %}">Añadir manga</a>
 
-<div class="filter_form">
-  <form method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">
-    <div id="state_div">
-      {{ filter_form.state.label_tag }}
-      {{ filter_form.state.errors }}
-      {{ filter_form.state }}
-    </div>
-    <div class="gender_div">
-      {{ filter_form.genres.label_tag }}
-      {{ filter_form.genres }}
-      {{ filter_form.genres.errors }}
-    </div>
-    <button type="submit">Filter</button>
+<div>
+  <div class="search">
+    <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
+      {{ search_form.slug }}
+      <button type="submit"><b>Search</b></button>
+    </form>
+  </div>
+
+  <form id='menu' class="filter_form" method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">
+    <ul>
+      <li>
+        {{ filter_form.state.label_tag }}
+        {{ filter_form.state }}
+      </li>
+      <li>
+        <a href='#'> {{ filter_form.genres.label }} >>> </a>
+        <ul id="submenu">
+          {% for st in filter_form.genres %}
+          <li>{{ st }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li>
+        <a href='#'> {{ filter_form.order.label }} >>> </a>
+        {% comment %} {{ filter_form.order }} {% endcomment %}
+        <ul id="submenu">
+          {% for st in filter_form.order %}
+          <li>{{ st }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li>
+        <button type="submit">Filter</button>
+      </li>
+    </ul>
   </form>
 </div>
   
 
 <ul class="lista">
   {% for mng in mangas_list %}
-    <li>
+    <li class="card">
         <a href="{% url 'manageManga:manga_detail' slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
-        <p>{{ mng.author }}</p>
-        <p>{{ mng.description }}</p>
-        <p>{{ mng.published_date }}</p>
-        <p>{{ mng.state.name }}</p>
-    </li>
-    <hr><br>
+        <span>{{ mng.author }}</span>
+        <span>{{ mng.description }}</span>
+        <span>{{ mng.published_date }}</span>
+        <span>{{ mng.state.name }}</span>
+    </li><br>
   {% endfor %}
 </ul>
 
 {% if page_obj.has_previous %}
-<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}">
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.previous_page_number }}
 </a>
 {% endif %}
 La página actual es {{ page_obj.number }}
 {% if page_obj.has_next %}
-<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}">
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.next_page_number }}
 </a>
 {% endif %}
