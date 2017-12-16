@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load static %}
 
-{% block title %}{{ manga.title }}{% endblock title %}
+{% block title %}Update {{ manga.title }}{% endblock title %}
 
 {% block static_files %}
-
+<script src="{% static 'js/manga_forms.js' %}"></script>
 {% endblock static_files %}
 
 {% block content %}

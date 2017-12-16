@@ -1,12 +1,10 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "base.html" %}{% load static %}
 
 {% block title %}Lista de mangas{% endblock title %}
 
 {% block static_files %}
   <link rel="stylesheet" href="{% static 'css/manga_list_filterForm.css' %}">
-  <script src="{% static 'js/manga_list_filterForm.js' %}"></script>
-
+  <script src="{% static 'js/manga_forms.js' %}"></script>
 {% endblock static_files %}
 
 {% block content %}

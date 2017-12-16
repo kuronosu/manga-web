@@ -1,3 +1,4 @@
+""" Settings of the project"""
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -21,6 +22,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #'user_accounts.apps.UserAccountsConfig',
     'manageManga.apps.ManagemangaConfig',
+    'userAccounts.apps.UseraccountsConfig',
 
 
     #'phonenumber_field',

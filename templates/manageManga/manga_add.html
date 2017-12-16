@@ -1,8 +1,10 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load static %}
 
 {% block title %}Añadir mangas{% endblock title %}
 
-{% block static_files %}{% endblock static_files %}
+{% block static_files %}
+<script src="{% static 'js/manga_forms.js' %}"></script>
+{% endblock static_files %}
 
 {% block content %}
 <h1>New Manga</h1>
