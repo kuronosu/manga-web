@@ -38,7 +38,7 @@ urlpatterns = [
         name='chapter_add'
     ),
     url(
-        r'^manga/(?P<manga_slug>[-\w]+)/(?P<manga_id>[0-9]+)/chapter/(?P<chapter_id>[-\w]+)$',
+        r'^manga/(?P<manga_slug>[-\w]+)/(?P<manga_id>[0-9]+)/chapter-(?P<chapter_id>[-\w]+)$',
         views.ChapterDetailView.as_view(),
         name='chapter_detail',
     ),

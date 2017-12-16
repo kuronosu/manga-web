@@ -1,7 +1,7 @@
 """Views: Create your views here."""
 # from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect# , HttpResponseNotFound
-# from django.http import Http404
+from django.http import HttpResponse#, HttpResponseRedirect# , HttpResponseNotFound
+from django.http import Http404
 from django.views.generic import ListView, DetailView # View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView #, FormView
@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+# from django.shortcuts import render_to_response
 
 from .models import Manga, Chapter
 from .forms import MangaRegistrationForm, FilterForm, SearchForm, ChapterRegistrationForm
@@ -88,7 +88,10 @@ class MangaListAndFilterView(ListView):
         if 'filter_form' not in context:
             context['filter_form'] = self.form_classes['filter_form'](self.request.GET)
         if 'search_form' not in context:
-            context['search_form'] = self.form_classes['search_form'](self.request.GET, initial={'slug': ''})
+            context['search_form'] = self.form_classes['search_form'](
+                self.request.GET,
+                initial={'slug': ''}
+                )
         if 'get_arg' not in context:
             search = self.request.GET.get('search', False)
             state = self.request.GET.get('state', False)
@@ -156,6 +159,17 @@ class MangaUpdateView(LoginRequiredMixin, UpdateView):
     query_pk_and_slug = True
     template_name_suffix = '_update'
 
+    def get(self, request, *args, **kwargs):
+        manga_id = self.kwargs['manga_id']
+        manga_slug = self.kwargs['slug']
+        manga = get_object_or_404(Manga, id=manga_id, slug=manga_slug)
+        get = super(MangaUpdateView, self).get(request)
+        if manga.author.id == self.request.user.id or self.request.user.is_staff:
+            return get
+        else:
+            template = loader.get_template('manageManga/restricted_access.html')
+            return HttpResponse(template.render({}, request))
+
 class MangaDeleteView(DeleteView):
     """Vista de para eliminar un manga"""
     model = Manga
@@ -180,24 +194,19 @@ class ChapterAddView(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         manga_id = self.kwargs['manga_id']
         manga_slug = self.kwargs['manga_slug']
-        manga = get_object_or_404(Manga, id=manga_id)
-        if manga.slug == manga_slug:
-            if manga.author.id == self.request.user.id or self.request.user.is_staff:
-                return super(ChapterAddView, self).get(request)
-            else:
-                template = loader.get_template('manageManga/restricted_access.html')
-                context = {}
-                return HttpResponse(template.render(context, request))
+        manga = get_object_or_404(Manga, id=manga_id, slug=manga_slug)
+        if manga.author.id == self.request.user.id or self.request.user.is_staff:
+            return super(ChapterAddView, self).get(request)
         else:
-            return render_to_response('404.html', {})
+            template = loader.get_template('manageManga/restricted_access.html')
+            return HttpResponse(template.render({}, request))
 
     def form_valid(self, form):
         manga_id = self.kwargs['manga_id']# forma de obtener el id
         manga = Manga.objects.get(id=manga_id)
         form.instance.manga = manga
         form.instance.owner = self.request.user
-        self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return super(ChapterAddView, self).form_valid(form)
 
 class ChapterDetailView(DetailView):
     """Vista de detalles de los mangas"""
@@ -208,15 +217,14 @@ class ChapterDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         manga_id = self.kwargs['manga_id']
         manga_slug = self.kwargs['manga_slug']
-        manga = get_object_or_404(Manga, id=manga_id)
-        chapter = get_object_or_404(Chapter, id=self.get_object().id)
-        if manga.slug == manga_slug:
-            if chapter.manga.id == manga.id:
-                return super(ChapterDetailView, self).get(request)
-            else:
-                return render_to_response('404.html', {})
+        manga = get_object_or_404(Manga, id=manga_id, slug=manga_slug)
+        chapter = self.get_object()
+        if chapter.manga.id == manga.id:
+            return super(ChapterDetailView, self).get(request)
         else:
-            return render_to_response('404.html', {})
+            raise Http404()
+            # return get_object_or_404(Chapter, id=-100)
+            # return HttpResponseRedirect(redirect_to=reverse_lazy('manageManga:list_of_mangas'))
 
 class ProfileView(ListView):
     """Vista para los mangas del usuario logeado"""
