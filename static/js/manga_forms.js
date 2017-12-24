@@ -8,10 +8,14 @@ $(function() {
             submenu.fadeToggle().css('display', 'block')
         })
     })
-    $("input[type=checkbox]").change(function(){
+    let checkboxs = $('input[type=checkbox]', '.form_control')
+    if (checkboxs.length <= 0) {
+        checkboxs = checkboxs.prevObject
+    }
+    checkboxs.change(function(){
         let elemento=this;
         let contador=0
-        $("input[type=checkbox]").each(function(){
+        checkboxs.each(function(){
             if($(this).is(":checked"))
                 contador++
         })

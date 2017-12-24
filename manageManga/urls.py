@@ -13,37 +13,37 @@ urlpatterns = [
         name='list_of_mangas'
     ),
     url(
-        r'^manga/add$',
+        r'^manga/add/$',
         views.MangaAddView.as_view(),
         name='manga_add'
     ),
     url(
-        r'^manga/(?P<slug>[-\w]+)/(?P<manga_id>[0-9]+)$',
+        r'^manga-(?P<slug>[-\w]+)/$',
         views.MangaDetailView.as_view(),
         name='manga_detail'
     ),
     url(
-        r'^manga/(?P<slug>[-\w]+)/(?P<manga_id>[0-9]+)/update$',
+        r'^manga-(?P<slug>[-\w]+)/edit/$',
         views.MangaUpdateView.as_view(),
         name='manga_update'
     ),
     url(
-        r'^manga/(?P<slug>[-\w]+)/(?P<manga_id>[0-9]+)/delete$',
+        r'^manga-(?P<slug>[-\w]+)/delete/$',
         views.MangaDeleteView.as_view(),
         name='manga_delete'
     ),
     url(
-        r'^manga/(?P<manga_slug>[-\w]+)/(?P<manga_id>[0-9]+)/chapter/add$',
+        r'^manga-(?P<manga_slug>[-\w]+)/chapter/add/$',
         views.ChapterAddView.as_view(),
         name='chapter_add'
     ),
     url(
-        r'^manga/(?P<manga_slug>[-\w]+)/(?P<manga_id>[0-9]+)/chapter-(?P<chapter_id>[-\w]+)$',
+        r'^manga-(?P<manga_slug>[-\w]+)/chapter-(?P<chapter_slug>[-\w]+)/$',
         views.ChapterDetailView.as_view(),
         name='chapter_detail',
     ),
     url(
-        r'^my$',
+        r'^my/$',
         views.ProfileView.as_view(),
         name='my_mangas'
     )

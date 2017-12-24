@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-18 03:48+0000\n"
+"POT-Creation-Date: 2017-12-17 21:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: MangaWeb/settings.py:125
+#: MangaWeb/settings.py:127
 msgid "Spanish"
 msgstr ""
 
-#: MangaWeb/settings.py:126
+#: MangaWeb/settings.py:128
 msgid "English"
 msgstr ""
 
-#: manageManga/forms.py:28
+#: manageManga/forms.py:29
 msgid "Titulo del manga"
 msgstr ""
 
-#: manageManga/forms.py:29
+#: manageManga/forms.py:30
 msgid "Description del manga"
 msgstr ""
 
@@ -37,38 +37,58 @@ msgstr ""
 #. Translators: se intenta crear un manga con mas de un numero especifico de generos
 #. Translators: Mensaje que aparece cuando
 #. Translators: se intenta filtar con mas de un numero especifico de generos
-#: manageManga/forms.py:45 manageManga/forms.py:68
+#: manageManga/forms.py:46 manageManga/forms.py:81
 msgid "Select maximum {} geners"
 msgstr ""
 
-#: manageManga/forms.py:81 manageManga/forms.py:82
+#: manageManga/forms.py:49
+msgid "Title not available"
+msgstr "Title not available"
+
+#: manageManga/forms.py:94 manageManga/forms.py:95
 msgid "Search"
 msgstr ""
 
-#: manageManga/models.py:109 manageManga/models.py:157
+#: manageManga/models.py:124 manageManga/models.py:173
 msgid "Author"
 msgstr ""
 
-#: manageManga/models.py:110
+#: manageManga/models.py:127
 msgid "Title"
 msgstr ""
 
-#: manageManga/models.py:111
+#: manageManga/models.py:128
 msgid "Description"
 msgstr ""
 
-#: manageManga/models.py:115
+#: manageManga/models.py:132
 msgid "Published Date"
 msgstr ""
 
-#: manageManga/models.py:117
+#: manageManga/models.py:134
 msgid "State"
 msgstr ""
 
-#: manageManga/models.py:121
+#: manageManga/models.py:139 manageManga/models.py:182
 msgid "Slug"
 msgstr ""
 
-#: manageManga/models.py:122
+#: manageManga/models.py:141
 msgid "Genres"
+msgstr ""
+
+#: manageManga/models.py:142
+msgid "Verify"
+msgstr ""
+
+#: manageManga/models.py:176
+msgid "Chapter number"
+msgstr ""
+
+#: manageManga/models.py:179
+msgid "Name"
+msgstr ""
+
+#: manageManga/models.py:209
+msgid "Chapters"
 msgstr ""

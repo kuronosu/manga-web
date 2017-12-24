@@ -53,7 +53,7 @@
 <ul class="lista">
   {% for mng in mangas_list %}
     <li class="card">
-        <a href="{% url 'manageManga:manga_detail' slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
+        <a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">{{ mng.title }}</a>
         <span>{{ mng.author }}</span>
         <span>{{ mng.description }}</span>
         <span>{{ mng.published_date }}</span>
@@ -63,15 +63,36 @@
 </ul>
 
 {% if page_obj.has_previous %}
+  {% if page_obj.previous_page_number == 1 %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.previous_page_number }}
 </a>
+  {% else %}
+<a href="{% url 'manageManga:list_of_mangas' %}?page=1{{ args_get }}">
+Primera
+</a>
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}{{ args_get }}">
+Ir a página {{ page_obj.previous_page_number }}
+</a>
+  {% endif %}
 {% endif %}
-La página actual es {{ page_obj.number }}
+
+<br><span>{{ page_obj.number }}</span><br>
+
 {% if page_obj.has_next %}
+  {% if page_obj.next_page_number == page_obj.paginator.num_pages %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.next_page_number }}
 </a>
+  {% else %}
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}{{ args_get }}">
+Ir a página {{ page_obj.next_page_number }}
+</a>
+<a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.paginator.num_pages }}{{ args_get }}">
+Ultima
+</a>
+  {% endif %}
+
 {% endif %}
 
 {% endblock content %}

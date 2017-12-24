@@ -12,8 +12,7 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
-{% if user.id == manga.author.id %}
-  
+{% if add %}
   {% if manga.verify %}
   <p>Verificado: <input type="checkbox"></p>
   {% else %}
@@ -27,11 +26,11 @@
 </ul>
 <span>Capitulos: </span><ul>
   {% for chapter in chapters %}
-  <li> <a href=" {% url 'manageManga:chapter_detail' manga_slug=manga.slug manga_id=manga.id chapter_id=chapter.id %} ">{{chapter.user_chapter_number}}</a> </li>
+  <li> <a href=" {% url 'manageManga:chapter_detail' manga_slug=manga.slug chapter_slug=chapter.slug %} ">{{chapter.user_chapter_number}}</a> </li>
   {% endfor %}
 
-  {% if add_valid %}
-  <a href="{% url 'manageManga:chapter_add' manga_slug=manga.slug manga_id=manga.id %} ">Añadir capitulo</a>
+  {% if add %}
+  <a href="{% url 'manageManga:chapter_add' manga_slug=manga.slug  %} ">Añadir capitulo</a>
   {% endif %}
 
 </ul>

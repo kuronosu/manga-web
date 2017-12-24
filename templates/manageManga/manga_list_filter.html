@@ -11,7 +11,7 @@
 <ul class="lista">
   {% for mng in mangas_list %}
     <li>
-        <a href="{% url 'manageManga:manga_detail' slug=mng.slug manga_id=mng.id %}">{{ mng.title }}</a>
+        <a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">{{ mng.title }}</a>
         <p>{{ mng.author }}</p>
         <p>{{ mng.description }}</p>
         <p>{{ mng.published_date }}</p>

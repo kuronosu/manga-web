@@ -5,9 +5,9 @@ from .models import Manga, Genre, State, Chapter
 
 class AdminManga(admin.ModelAdmin):
     """Clase para registrar el modelo Manga"""
-    list_display = ['id', 'author', 'title', 'description', 'published_date']
+    list_display = ['id', 'author', 'title', 'description', 'published_date', 'verify']
     list_display_links = ['id']
-    list_filter = ['author__username', 'published_date', 'state', 'genres']
+    list_filter = ['author__username', 'published_date', 'state', 'genres', 'verify']
     list_editable = []
     search_fields = ['author__username', 'title']
     ordering = ["id"]
@@ -18,11 +18,11 @@ class AdminManga(admin.ModelAdmin):
 
 class AdminChapter(admin.ModelAdmin):
     """Clase para registrar el modelo Chapter"""
-    list_display = ['id', 'manga', 'owner', 'user_chapter_number']
+    list_display = ['id', 'manga', 'author', 'user_chapter_number']
     list_display_links = ['id']
-    list_filter = ['manga__title', 'owner__username']
+    list_filter = ['manga__title', 'author__username']
     list_editable = []
-    search_fields = ['owner__username', 'manga__title']
+    search_fields = ['author__username', 'manga__title']
     ordering = ["id"]
 
     class Meta:
