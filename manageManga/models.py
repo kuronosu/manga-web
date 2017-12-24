@@ -13,8 +13,8 @@ def user_directory_path(instance, filename):
     """
     # file will be uploaded to MEDIA_ROOT/manga/chapter/user_<id>/<filename>
     return 'manga/chapter/user_{0}_{1}/{2}'.format(
-        instance.owner.id,
-        instance.owner.username,
+        instance.author.id,
+        instance.author.username,
         filename
         )
 
