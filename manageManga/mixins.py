@@ -1,6 +1,11 @@
 """Mixins"""
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+
+from .models import Manga, Chapter, Voto
+from .funct import frontend_permission, filter_obj_model
+
 class FilterMixin(object):
     """Mixin Filter for MangaListAndFilterView"""
     def get_queryset(self):
@@ -78,10 +83,70 @@ class StaffFormsMixin(object):
 
 class UserPermissionsMixin(object):
     """Mixin para verificar si un usuario puede hacer modificaciones con respecto a un modelo"""
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         slug = self.kwargs[self.permissions_slug_url_kwarg]
         model_obj = get_object_or_404(self.permissions_model, slug=slug)
-        if model_obj.author.id == self.request.user.id or self.request.user.is_staff:
-            return super(UserPermissionsMixin, self).get(request, *args, **kwargs)
-        else:
+        if not (model_obj.author.id == self.request.user.id or self.request.user.is_staff):
             return redirect('manageManga:manga_detail', slug=slug)
+        return super(UserPermissionsMixin, self).dispatch(request, *args, **kwargs)
+
+class ExtraContextMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(ExtraContextMixin, self).get_context_data(**kwargs)
+        for key, val in self.extra_context.items():
+            if key not in context:
+                if val[0] == 'filter':
+                    filter_dic = {}
+                    for i, j in val[2].items():
+                        if j == 'id':
+                            filter_dic[i] = self.object.id
+                    context_value = filter_obj_model(val[1], **filter_dic)
+                elif val[0] == 'frontend_permission':
+                    context_value = frontend_permission(self)
+                elif val[0] == 'vote_form':
+                    vote_object = filter_obj_model(
+                        Voto,
+                        manga__id=self.object.id,
+                        author__id=self.request.user.id
+                        )
+                    try:
+                        context_value = val[1](dict(vote_value=vote_object[0].vote_value))
+                    except IndexError as error:
+                        print(error)
+                        context_value = val[1]()
+            context[key] = context_value
+        return context
+
+class ChapterAddMixin:
+    """ Mixin para la vista ChapterAddView """
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        ###
+        Y verifica si se crea un capitulo referenciado a un manga con un
+        numero de capitulo repetido.
+        """
+        form = self.get_form()
+        manga = get_object_or_404(Manga, slug=self.kwargs['manga_slug'])
+        try:
+            chapters = filter_obj_model(Chapter, manga__id=manga.id)
+            user_chapter_number = int(self.get_form_kwargs()['data']['user_chapter_number'])
+            for i in chapters:
+                if i.user_chapter_number == user_chapter_number:
+                    form.add_error('user_chapter_number', _('Chapter number not available'))
+        except ValueError:
+            form.add_error('user_chapter_number', _('Error interno.'))
+
+        self.object = None
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        manga_slug = self.kwargs['manga_slug']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        form.instance.manga = manga
+        form.instance.author = self.request.user
+        return super(ChapterAddMixin, self).form_valid(form)

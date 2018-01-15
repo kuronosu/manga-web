@@ -6,17 +6,9 @@ from django.template import defaultfilters
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
-def user_directory_path(instance, filename):
-    """
-    Funcion que añade retorna una path segun los datos y usuario y archivo
-    """
-    # file will be uploaded to MEDIA_ROOT/manga/chapter/user_<id>/<filename>
-    return 'manga/chapter/user_{0}_{1}/{2}'.format(
-        instance.author.id,
-        instance.author.username,
-        filename
-        )
+from .funct import filter_obj_model, user_directory_path
 
 class Genre(models.Model):
     """
@@ -140,6 +132,11 @@ class Manga(models.Model):
         )
     genres = models.ManyToManyField(Genre, verbose_name=_('Genres'))
     verify = models.BooleanField(default=False, verbose_name=_('Verify'))
+    puntaje = models.FloatField(
+        verbose_name=_('Puntaje'),
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        default=0
+        )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = defaultfilters.slugify(self.title)
@@ -163,7 +160,56 @@ class Manga(models.Model):
     class Meta:
         """Meta clase"""
         ordering = ["published_date"]
+        verbose_name = 'Manga'
         verbose_name_plural = 'Mangas'
+
+class Voto(models.Model):
+    VOTE_CHOICES = (
+        (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
+        (6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
+    )
+    manga = models.ForeignKey(Manga)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('Author'),
+        on_delete=models.CASCADE
+        )
+    vote_value = models.IntegerField(
+        verbose_name=_('Voto'),
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        choices=VOTE_CHOICES
+        )
+
+    def __str__(self):
+        return str(self.vote_value)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(Voto, self).save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+            )
+        manga = get_object_or_404(Manga, id=self.manga.id)
+        votos = filter_obj_model(Voto, manga__id=self.manga.id)
+        suma = 0
+        for i in votos:
+            suma += i.vote_value
+        prom = suma/len(votos)
+        manga.puntaje = prom
+        manga.save()
+
+    def get_absolute_url(self):
+        """Retorna la detail ulr hacia el manga referente al voto"""
+        return reverse(
+            'manageManga:manga_detail',
+            kwargs={'slug': self.manga.slug}
+            )
+
+    class Meta:
+        managed = True
+        verbose_name = 'Voto'
+        verbose_name_plural = 'Votos'
 
 class Chapter(models.Model):
     """
@@ -191,7 +237,7 @@ class Chapter(models.Model):
             )
 
     def __str__(self):
-        return str(self.manga)
+        return str(self.user_chapter_number)
 
     def __unicode__(self):
         return str(self.manga)

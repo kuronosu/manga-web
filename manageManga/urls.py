@@ -43,6 +43,11 @@ urlpatterns = [
         name='chapter_detail',
     ),
     url(
+        r'^vote-manga-(?P<manga_slug>[-\w]+)/$',
+        views.VoteView.as_view(),
+        name='vote_manga'
+    ),
+    url(
         r'^my/$',
         views.ProfileView.as_view(),
         name='my_mangas'

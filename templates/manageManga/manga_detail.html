@@ -3,20 +3,25 @@
 {% block title %}{{ manga.title }}{% endblock title %}
 
 {% block static_files %}
-
+<style>
+  .vote_selected{
+    background-color: red;
+  }
+</style>
 {% endblock static_files %}
 
 {% block content %}
 <h1>{{ manga.title }}</h1>
-<p>{{ manga.author }}</p>
 <p>{{manga.description}}</p>
-<p>{{ manga.published_date }}</p>
 <p>{{ manga.state }}</p>
-{% if add %}
+<p>{{ manga.author }}</p>
+<p>{{ manga.puntaje }}</p>
+<p>{{ manga.published_date }}</p>
+{% if frontend_permission %}
   {% if manga.verify %}
-  <p>Verificado: <input type="checkbox"></p>
+  <p>Verificado</p>
   {% else %}
-  <p>No verificado: <input type="checkbox"></p>
+  <p>No verificado</p>
   {% endif %}
 {% endif %}
 <span>Generos: </span><ul>
@@ -29,9 +34,19 @@
   <li> <a href=" {% url 'manageManga:chapter_detail' manga_slug=manga.slug chapter_slug=chapter.slug %} ">{{chapter.user_chapter_number}}</a> </li>
   {% endfor %}
 
-  {% if add %}
+  {% if frontend_permission %}
   <a href="{% url 'manageManga:chapter_add' manga_slug=manga.slug  %} ">Añadir capitulo</a>
   {% endif %}
 
 </ul>
+<form method="post" action="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">
+  {% csrf_token %}
+  {% for i in form_vote_files %}
+  {% if i == vote_form.vote_value.value %}
+  <input type="submit" name="vote_value" value="{{i}}" class="vote_selected">
+  {% else %}
+  <input type="submit" name="vote_value" value="{{i}}">
+  {% endif %}
+  {% endfor %}
+</form>
 {% endblock content %}
