@@ -159,7 +159,7 @@ class Manga(models.Model):
 
     class Meta:
         """Meta clase"""
-        ordering = ["published_date"]
+        ordering = ["-puntaje"]
         verbose_name = 'Manga'
         verbose_name_plural = 'Mangas'
 
@@ -217,7 +217,7 @@ class Chapter(models.Model):
     """
     manga = models.ForeignKey(Manga)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
-    content = models.FileField(upload_to=user_directory_path)
+    content = models.FileField(upload_to=user_directory_path, verbose_name='Content')
     user_chapter_number = models.IntegerField(
         verbose_name=_('Chapter number'),
         validators=[MinValueValidator(1)]
@@ -229,6 +229,7 @@ class Chapter(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = defaultfilters.slugify(self.user_chapter_number)
+        self.content.name = str(self.manga) + '_' + str(self.user_chapter_number) + '.pdf'
         return super(Chapter, self).save(
             force_insert=force_insert,
             force_update=force_update,

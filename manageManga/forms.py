@@ -156,3 +156,12 @@ class ChapterRegistrationForm(forms.ModelForm):
         """Meta clase"""
         model = Chapter
         fields = ['content', 'user_chapter_number']
+
+    def clean(self):
+        content = self.cleaned_data.get('content')
+        content_file_name = str(content)
+        split_str = content_file_name.split('.')
+        tipo = split_str[(len(split_str)-1)]
+        if tipo != 'pdf':
+            self.add_error('content', _('Por favor suba un archivo pdf.'))
+        return super(ChapterRegistrationForm, self).clean()

@@ -1,13 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ manga.title }}{% endblock title %}
+{% block title %}Manga: {{ manga.title }}{% endblock title %}
 
 {% block static_files %}
-<style>
-  .vote_selected{
-    background-color: red;
-  }
-</style>
+<script src="{% static 'js/ajax_manga.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/manga_detail.css' %}">
 {% endblock static_files %}
 
 {% block content %}
@@ -15,7 +13,7 @@
 <p>{{manga.description}}</p>
 <p>{{ manga.state }}</p>
 <p>{{ manga.author }}</p>
-<p>{{ manga.puntaje }}</p>
+<p id='puntaje'>{{ manga.puntaje }}</p>
 <p>{{ manga.published_date }}</p>
 {% if frontend_permission %}
   {% if manga.verify %}
@@ -39,14 +37,19 @@
   {% endif %}
 
 </ul>
-<form method="post" action="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">
+<div id="votes" action-url="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">
   {% csrf_token %}
   {% for i in form_vote_files %}
   {% if i == vote_form.vote_value.value %}
-  <input type="submit" name="vote_value" value="{{i}}" class="vote_selected">
+  <div id="vote_{{i}}" class="vote_selected vote">
+    <span>{{i}}</span>
+  </div>
   {% else %}
-  <input type="submit" name="vote_value" value="{{i}}">
+  <div id="vote_{{i}}" class="vote">
+    <span>{{i}}</span>
+  </div>
   {% endif %}
   {% endfor %}
 </form>
+<p id='resultado'></p>
 {% endblock content %}

@@ -23,9 +23,9 @@
 <p>{{ chapter.manga }}</p>
 <p>{{ chapter.owner }}</p>
 <div id="portapdf">
-    <object data="/media/{{ chapter.content }}#toolbar=0&page=4" type="application/pdf" width="500" height="700"></object> 
+    <object data="/media/{{ chapter.content }}#toolbar=0&page={{page}}" type="application/pdf" width="500" height="700"></object> 
 </div>
-{% comment %} <embed id="target" src="/media/{{ chapter.content }}#toolbar=0&page=4" width="500" height="700" type='application/pdf'> {% endcomment %}
+{% comment %} <embed id="target" src="/media/{{ chapter.content }}#toolbar=0" width="500" height="700" type='application/pdf'> {% endcomment %}
 <p>{{ chapter.user_chapter_number }}</p>
 <p>{{ chapter.name }}</p>
 {% endblock content %}

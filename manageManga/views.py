@@ -1,5 +1,5 @@
 """Views: Create your views here."""
-from django.http import HttpResponseRedirect, HttpResponse #, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse #, HttpResponseNotFound
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import (
@@ -10,7 +10,7 @@ from django.views.generic.edit import (
     ProcessFormView
     )
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
 
@@ -136,12 +136,18 @@ class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.manga = get_object_or_404(Manga, slug=self.kwargs['manga_slug'])
-        return super(VoteView, self).form_valid(form)
+        self.object = form.save()
+        manga = get_object_or_404(Manga, slug=self.kwargs['manga_slug'])
+        vote_value = self.object.vote_value
+        puntaje = manga.puntaje
+        return JsonResponse({
+            'state': True,
+            'vote_value': vote_value,
+            'puntaje': puntaje,
+            })
 
     def form_invalid(self, form):
-        return HttpResponseRedirect(
-            reverse_lazy('manageManga:manga_detail', kwargs={'slug': self.kwargs['manga_slug']})
-            )
+        return JsonResponse({'state': False})
 
 """
 Vistas de los capitulos
@@ -170,6 +176,13 @@ class ChapterDetailView(DetailView):
         manga = get_object_or_404(Manga, slug=manga_slug)
         queryset = self.get_queryset().filter(manga__id=manga.id).filter(slug=chapter_slug)
         return super(ChapterDetailView, self).get_object(queryset=queryset)
+
+class PageChapterDetailView(ChapterDetailView):
+    def get_context_data(self, **kwargs):
+        context = super(PageChapterDetailView, self).get_context_data(**kwargs)
+        if 'page' not in context:
+            context['page'] = self.kwargs['page']
+        return context
 
 class ProfileView(ListView):
     """Vista para los mangas del usuario logeado"""
