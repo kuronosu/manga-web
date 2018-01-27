@@ -1,9 +1,9 @@
 """Views from userAccounts app"""
+from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from .mixins import AjaxableResponseMixin
 from django.http import JsonResponse
 
 def validate_username(request):
@@ -16,8 +16,16 @@ def validate_username(request):
         data['error_message'] = 'A user with this username already exists.'
     return JsonResponse(data)
 
-class SingUpView(AjaxableResponseMixin, CreateView):
+class SingUpView(CreateView):
     """SingUp View"""
-    template_name = 'core/signup.html'
+    template_name = 'userAccounts/signup.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('manageManga:list_of_mangas')
+
+class LogInView(LoginView):
+    """LogIn View"""
+    template_name = 'userAccounts/login.html'
+
+class LogOutView(LogoutView):
+    """LogOut View"""
+    pass

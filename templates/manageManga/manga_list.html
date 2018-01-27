@@ -4,7 +4,7 @@
 {% block title %}Lista de mangas{% endblock title %}
 
 {% block static_files %}
-  <link rel="stylesheet" href="{% static 'css/manga_list_filterForm.css' %}">
+  <link rel="stylesheet" href="{% static 'css/manga_list.css' %}">
   <script src="{% static 'js/manga_forms.js' %}"></script>
 {% endblock static_files %}
 
@@ -14,10 +14,6 @@
 
 <div>
   <div class="search">
-    <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
-      {{ search_form.slug }}
-      <button type="submit"><b>Search</b></button>
-    </form>
   </div>
 
   <form id='menu' class="filter_form" method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">
@@ -49,19 +45,25 @@
     </ul>
   </form>
 </div>
-  
 
-<ul class="lista">
-  {% for mng in mangas_list %}
-    <li class="card">
-        <a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">{{ mng.title }}</a>
-        <span>{{ mng.author }}</span>
-        <span>{{ mng.description }}</span>
-        <span>{{ mng.published_date }}</span>
-        <span>{{ mng.state.name }}</span>
-    </li><br>
+<section>
+  <ul class="Mangas">
+{% for mng in mangas_list %}
+    <li>
+    <article class="Manga-container">
+      <figure class="Manga-item">
+        <a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">
+          <img class="Manga-image" src="{{ mng.image.url }}" alt="{{ mng.title }}">
+        </a>
+        <figcaption class="Manga-title">
+          {{ mng.title }}
+        </figcaption>
+      </figure>
+    </article>
+  </li>
   {% endfor %}
-</ul>
+  </ul>
+</section>
 
 {% if page_obj.has_previous %}
   {% if page_obj.previous_page_number == 1 %}
@@ -95,5 +97,6 @@ Ultima
   {% endif %}
 
 {% endif %}
+
 
 {% endblock content %}

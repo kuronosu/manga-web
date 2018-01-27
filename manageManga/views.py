@@ -85,7 +85,7 @@ class MangaDetailView(ExtraContextMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(MangaDetailView, self).get_context_data(**kwargs)
         if 'form_vote_files' not in context:
-            context['form_vote_files'] = list(range(1,11))
+            context['form_vote_files'] = list(range(1, 11))
         return context
 
 class MangaUpdateView(LoginRequiredMixin, UserPermissionsMixin, StaffFormsMixin, UpdateView):

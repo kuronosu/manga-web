@@ -1,5 +1,7 @@
 """Urls del app manageManga"""
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -58,4 +60,4 @@ urlpatterns = [
         name='my_mangas'
     )
     # url(r'^manga/filter$', views.MangaFilterView.as_view(), name = 'manga_filter'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

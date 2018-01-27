@@ -8,30 +8,63 @@
     <title>{% block title %}Tu Manga{% endblock title %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
     <script src="{% static 'js/jquery/jquery.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     {% block static_files %}{% endblock static_files %}
   </head>
   <body>
-
-    <div>
-      <a href="{% url 'manageManga:home' %}">Inicio</a>
-    </div>
-
-    <header>
-      {% block header %}{% endblock header %}
-    </header>
-
-    <main>
-      {% block content %}{% endblock content %}
-    </main>
-
-    <footer>
-      {% block footer %}{% endblock footer %}
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-    <script src="{% static 'js/jquery/jquery.js' %}"></script>
-    <script src="{% static 'js/app.js' %}"></script>
-
-    {% block javascript %}{% endblock javascript %}
+    <section class="container">
+      <header>
+        <nav class="Menu_nav">
+          <a class="Brand_nav" href="{% url "manageManga:home" %}">
+            <p>Manga</p>
+          </a>
+          <ul class="Menu-list_nav">
+            <li class="Menu-item_nav">
+              <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
+                <span>
+                  <input type="text" name="search" maxlength="100" placeholder="Buscar" id="id_slug">
+                </span>
+                <span>
+                  <button type="submit"><b>Search</b></button>
+                </span>
+              </form>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="Menu-item_nav">
+              {{ user.username }}
+            </li>
+            <li class="Menu-item_nav">
+              <a href="{% url "manageManga:manga_add" %}">New Manga</a>
+            </li>
+            <li class="Menu-item">
+              <a href="{% url "userAccounts:logout" %}">Log out</a>
+            </li>
+            {% else %}
+            <li class="Menu-item_nav">
+              <a href="{% url "userAccounts:singup" %}">Sign Up</a>
+            </li>
+            <li class="Menu-item_nav">
+              <a href="{% url "userAccounts:login" %}?next={{request.path}}">Log in</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% block header %}{% endblock header %}
+      </header>
+  
+      <main>
+        {% block content %}{% endblock content %}
+      </main>
+  
+      <footer>
+        {% block footer %}{% endblock footer %}
+      </footer>
+  
+      <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+      <script src="{% static 'js/jquery/jquery.js' %}"></script>
+      <script src="{% static 'js/app.js' %}"></script>
+  
+      {% block javascript %}{% endblock javascript %}
+    </section>
   </body>
 </html>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ manga.title }}{% endblock title %}
+{% block title %}{{ object.title }}{% endblock title %}
 
 {% block static_files %}
 
@@ -8,7 +8,30 @@
 
 {% block content %}
 <form action="" method="post">{% csrf_token %}
-<p>Are you sure you want to delete "{{ object }}"?</p>
+<p>Are you sure you want to delete?</p>
+<h1>{{ object.title }}</h1>
+<img src="{{ object.image.url }}" alt="" style="max-width: 190px;max-height: 260px;">
+<p>{{object.description}}</p>
+<p>{{ object.state }}</p>
+<p>{{ object.author }}</p>
+<p id='puntaje'>{{ object.puntaje }}</p>
+<p>{{ object.published_date }}</p>
+{% if frontend_permission %}
+  {% if object.verify %}
+  <p>Verificado</p>
+  {% else %}
+  <p>No verificado</p>
+  {% endif %}
+{% endif %}
+<span>Generos: </span><ul>
+  {% for i in object.genres.all %}
+  <li>{{ i }}</li>
+  {% endfor %}
+</ul>
+<span>Capitulos: </span><ul>
+  {% for chapter in chapters %}
+  <li> <a href=" {% url 'manageobject:chapter_detail' object_slug=object.slug chapter_slug=chapter.slug %} ">{{chapter.user_chapter_number}}</a> </li>
+  {% endfor %}
 <input type="submit" value="Confirm" />
 </form>
 {% endblock content %}

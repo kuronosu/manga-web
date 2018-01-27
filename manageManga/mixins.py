@@ -24,9 +24,9 @@ class FilterMixin(object):
                 if order == '-1':
                     query = query.order_by('-title')
                 if order == '-2':
-                    query = query.order_by('published_date')
+                    query = query.order_by('published_date_in_page')
                 if order == '2':
-                    query = query.order_by('-published_date')
+                    query = query.order_by('-published_date_in_page')
         if search:
             query = query.filter(title__icontains=search)
         if state:

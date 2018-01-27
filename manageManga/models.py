@@ -1,7 +1,7 @@
 """Models: Create your models here."""
 # from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
 from django.template import defaultfilters
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -116,16 +116,20 @@ class Manga(models.Model):
         verbose_name=_('Author'),
         on_delete=models.CASCADE
         )
-    title = models.CharField(max_length=50, verbose_name=_('Title'), unique=True)
-    description = models.TextField(max_length=700, verbose_name=_('Description'))
-    published_date = models.DateField(
+    title = models.CharField(max_length=100, verbose_name=_('Title'), unique=True)
+    description = models.TextField(
+        max_length=1000,
+        verbose_name=_('Description'),
+        validators=[MinLengthValidator(10)]
+        )
+    published_date_in_page = models.DateField(
         auto_now_add=True,
         auto_now=False,
         verbose_name=_('Published Date')
         )
     state = models.ForeignKey(State, verbose_name=_('State'))
     slug = models.SlugField(
-        max_length=50,
+        max_length=100,
         default=defaultfilters.slugify(title),
         unique=True,
         verbose_name=_('Slug'),
@@ -134,9 +138,10 @@ class Manga(models.Model):
     verify = models.BooleanField(default=False, verbose_name=_('Verify'))
     puntaje = models.FloatField(
         verbose_name=_('Puntaje'),
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
         default=0
         )
+    image = models.ImageField(upload_to='manga/portadas')
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = defaultfilters.slugify(self.title)

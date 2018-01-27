@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form class='Pin-form' enctype="multipart/form-data" action="" method="POST">
+    <h1 class="Form-title">Log in</h1>
+    {% csrf_token %}
+    {% for field in form  %}
+    {% if field.errors %}
+    {% for error in field.errors %}
+    {{ error }}
+    {% endfor %}
+    {% endif %}
+    <label class="Pin-form--label" for="{{ field.name }}">{{ field.label}}</label>
+    {{ field }}
+    {% endfor %}
+    <input type="hidden" name="next" value="{{request.host}}">
+    <input type="submit" class="Pin-form--btn">
+</form>
+
+{% endblock content %}

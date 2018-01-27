@@ -5,9 +5,9 @@ from .models import Manga, Genre, State, Chapter, Voto
 
 class AdminManga(admin.ModelAdmin):
     """Clase para registrar el modelo Manga"""
-    list_display = ['id', 'author', 'title', 'description', 'published_date', 'verify', 'puntaje']
+    list_display = ['id', 'author', 'title', 'description', 'published_date_in_page', 'verify', 'puntaje']
     list_display_links = ['id']
-    list_filter = ['author__username', 'published_date', 'state', 'genres', 'verify']
+    list_filter = ['author__username', 'published_date_in_page', 'state', 'genres', 'verify']
     list_editable = []
     search_fields = ['author__username', 'title']
     ordering = ["-puntaje"]

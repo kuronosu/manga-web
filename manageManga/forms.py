@@ -81,7 +81,7 @@ class MangaRegistrationForm(forms.ModelForm):
     class Meta:
         """Meta clase"""
         model = Manga
-        fields = ['title', 'description', 'state', 'genres']
+        fields = ['title', 'description', 'state', 'genres', 'image']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
 
     def __init__(self, *args, **kwargs):
@@ -138,7 +138,7 @@ class StaffMangaEditForm(MangaEditForm):
     class Meta:
         """Meta clase"""
         model = Manga
-        fields = ('__all__')
+        fields = ['title', 'description', 'state', 'genres', 'image', 'verify']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
 
 class VoteMangaForm(forms.ModelForm):
