@@ -1,5 +1,5 @@
 """Views: Create your views here."""
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse #, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, Http404
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import (
@@ -7,21 +7,23 @@ from django.views.generic.edit import (
     UpdateView,
     DeleteView,
     ModelFormMixin,
-    ProcessFormView
+    ProcessFormView,
+    BaseDetailView
     )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
 
-from .models import Manga, Chapter, Voto
+from .models import Manga, Chapter, Voto, Tomo
 from .funct import filter_obj_model
 from .mixins import (
     FilterMixin,
     StaffFormsMixin,
     UserPermissionsMixin,
     ExtraContextMixin,
-    ChapterAddMixin
+    ChapterAddMixin,
+    TomoAddMixin
     )
 from .forms import (
     FilterForm,
@@ -30,15 +32,13 @@ from .forms import (
     MangaEditForm,
     ChapterRegistrationForm,
     VoteMangaForm,
+    TomoCreationForm
     )
 # Staff forms
 from .forms import (
-    StaffMangaEditForm
+    StaffMangaEditForm,
+    StaffTomoEditForm
     )
-
-class My404(TemplateView):
-    """Vista del error 404"""
-    template_name = "404.html"
 
 class HomeView(TemplateView):
     """Vista del home"""
@@ -68,7 +68,12 @@ class MangaAddView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super(MangaAddView, self).form_valid(form)
+        self.object = form.save()
+        tomo = TomoCreationForm({'number':-1})
+        tomo.instance.manga = self.object
+        tomo.instance.author = self.request.user
+        tomo.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class MangaDetailView(ExtraContextMixin, DetailView):
     """Vista de detalles de los mangas"""
@@ -77,10 +82,17 @@ class MangaDetailView(ExtraContextMixin, DetailView):
     query_pk_and_slug = True
     template_name = 'manageManga/manga_detail.html'
     extra_context = {
-        'chapters': ['filter', Chapter, {'manga__id': 'id'}],
+        'tomos': ['filter', Tomo, {'manga__id': 'id'}],
         'frontend_permission': ['frontend_permission'],
         'vote_form': ['vote_form', VoteMangaForm]
     }
+
+    def dispatch(self, request, *args, **kwargs):
+        manga = self.get_object()
+        user_access = ((manga.author.id == self.request.user.id) or self.request.user.is_staff)
+        if not (manga.verify or user_access):
+            return HttpResponse('Este manga aun no se verifica.')
+        return super(MangaDetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(MangaDetailView, self).get_context_data(**kwargs)
@@ -109,6 +121,10 @@ class MangaDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
     success_url = reverse_lazy('manageManga:list_of_mangas')
     permissions_slug_url_kwarg = 'slug'
     permissions_model = Manga
+
+"""
+Vistas de los votos
+"""
 
 class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
     """ Vista para manejar los votos de un manga """
@@ -150,6 +166,115 @@ class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
         return JsonResponse({'state': False})
 
 """
+Vistas de los tomos
+"""
+
+class TomoAddView(LoginRequiredMixin, TomoAddMixin, UserPermissionsMixin, CreateView):
+    """Vista de para crear un tomo de un manga"""
+    login_url = reverse_lazy('userAccounts:login')
+    model = Tomo
+    template_name_suffix = '_add'
+    form_class = TomoCreationForm
+    permissions_slug_url_kwarg = 'manga_slug'
+    permissions_model = Manga
+
+    def get_permissions_object(self, *args, **kwargs):
+        slug = self.kwargs[self.permissions_slug_url_kwarg]
+        manga = get_object_or_404(self.permissions_model, slug=slug)
+        return manga
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super(TomoAddView, self).post(request, *args, **kwargs)
+
+class TomoDetailView(BaseDetailView):
+    """
+    Vista para mostrar los detalles de un tomo, incluyendo los capitulos asociados a él
+    """
+    model = Tomo
+
+    def get(self, request, *args, **kwargs):
+        raise Http404('No se puede acceder por get')
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        chapters_query = filter_obj_model(Chapter, tomo=self.object)
+        chapters = []
+        for i in chapters_query:
+            kwargs = {
+                'manga_slug': self.object.manga.slug,
+                'tomo_number': self.object.number,
+                'chapter_slug': i.slug
+                }
+            url = reverse_lazy('manageManga:chapter_detail', kwargs=kwargs)
+            chapters.append({
+                'number': i.user_chapter_number,
+                'name': i.name,
+                'url': url
+                })
+        url_add = reverse_lazy('manageManga:chapter_add', kwargs={
+            'manga_slug': self.object.manga.slug,
+            'tomo_number': self.object.number,
+            })
+        context = {
+            'chapters': chapters,
+            'url_add': url_add
+        }
+        return JsonResponse(context)
+
+    def get_object(self, queryset=None):
+        manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
+        return tomo
+
+class TomoUpdateView(LoginRequiredMixin, UserPermissionsMixin, TomoAddMixin, UpdateView):
+    """Vista de para actualizar un tomo de un manga"""
+    login_url = reverse_lazy('userAccounts:login')
+    model = Tomo
+    form_class = TomoCreationForm
+    template_name_suffix = '_update'
+    staff_form = StaffTomoEditForm
+    permissions_slug_url_kwarg = 'manga_slug'
+    permissions_model = Manga
+
+    def get_permissions_object(self, *args, **kwargs):
+        slug = self.kwargs[self.permissions_slug_url_kwarg]
+        manga = get_object_or_404(self.permissions_model, slug=slug)
+        return manga
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(TomoUpdateView, self).post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
+        return tomo
+
+class TomoDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
+    model = Tomo
+    login_url = reverse_lazy('userAccounts:login')
+    success_url = reverse_lazy('manageManga:list_of_mangas')
+    permissions_slug_url_kwarg = 'manga_slug'
+    permissions_model = Manga
+
+    def get_object(self, queryset=None):
+        manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
+        return tomo
+    
+    def get_permissions_object(self, *args, **kwargs):
+        slug = self.kwargs[self.permissions_slug_url_kwarg]
+        manga = get_object_or_404(self.permissions_model, slug=slug)
+        return manga
+
+"""
 Vistas de los capitulos
 """
 
@@ -162,6 +287,26 @@ class ChapterAddView(LoginRequiredMixin, ChapterAddMixin, UserPermissionsMixin, 
     permissions_slug_url_kwarg = 'manga_slug'
     permissions_model = Manga
 
+    def dispatch(self, request, *args, **kwargs):
+        manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        queryset = filter_obj_model(Tomo, number=tomo_number, manga__id=manga.id)
+        try:
+            queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404("No coincide el tomo del manga y el manga peroporcionado")
+        return super(ChapterAddView, self).dispatch(request, *args, **kwargs)
+    
+    def get_permissions_object(self, *args, **kwargs):
+        slug = self.kwargs[self.permissions_slug_url_kwarg]
+        manga = get_object_or_404(self.permissions_model, slug=slug)
+        return manga
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super(ChapterAddView, self).post(request, *args, **kwargs)
+
 class ChapterDetailView(DetailView):
     """Vista de detalles de los mangas"""
     model = Chapter
@@ -172,10 +317,20 @@ class ChapterDetailView(DetailView):
 
     def get_object(self, queryset=None):
         manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
         chapter_slug = self.kwargs['chapter_slug']
         manga = get_object_or_404(Manga, slug=manga_slug)
-        queryset = self.get_queryset().filter(manga__id=manga.id).filter(slug=chapter_slug)
+        tomo = get_object_or_404(Tomo, number=tomo_number, manga__id=manga.id)
+        queryset = self.get_queryset().filter(
+            manga=manga,
+            slug=chapter_slug,
+            tomo=tomo
+            )
         return super(ChapterDetailView, self).get_object(queryset=queryset)
+
+"""
+Vistas Extras
+"""
 
 class PageChapterDetailView(ChapterDetailView):
     def get_context_data(self, **kwargs):

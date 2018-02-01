@@ -216,10 +216,40 @@ class Voto(models.Model):
         verbose_name = 'Voto'
         verbose_name_plural = 'Votos'
 
+class Tomo(models.Model):
+    """ Modelo de los tomos """
+    number = models.IntegerField(
+        verbose_name=_('Numero del Tomo'),
+        validators=[MinValueValidator(-1)]
+        )
+    manga = models.ForeignKey(Manga)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
+
+    def get_absolute_url(self):
+        """Retorna la detail ulr para cada objeto de este modelo"""
+        return reverse(
+            'manageManga:manga_detail',
+            kwargs={'slug': self.manga.slug}
+            )
+
+    def __str__(self):
+        return str(self.number)
+
+    def __unicode__(self):
+        return str(self.number)
+
+    class Meta:
+        """Meta clase"""
+        ordering = ["number"]
+        verbose_name_plural = _('Tomos')
+        verbose_name = _('Tomo')
+
+
 class Chapter(models.Model):
     """
     Modelo de capitulos
     """
+    tomo = models.ForeignKey(Tomo)
     manga = models.ForeignKey(Manga)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
     content = models.FileField(upload_to=user_directory_path, verbose_name='Content')
@@ -234,8 +264,13 @@ class Chapter(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = defaultfilters.slugify(self.user_chapter_number)
-        self.content.name = str(self.manga) + '_' + str(self.user_chapter_number) + '.pdf'
-        return super(Chapter, self).save(
+        string_name = "{}_{}_{}.pdf".format(
+            str(self.manga),
+            str(self.tomo),
+            str(self.user_chapter_number)
+            )
+        self.content.name = string_name
+        super(Chapter, self).save(
             force_insert=force_insert,
             force_update=force_update,
             using=using,
@@ -252,7 +287,7 @@ class Chapter(models.Model):
         """Retorna la detail ulr para cada objeto de este modelo"""
         return reverse(
             'manageManga:chapter_detail',
-            kwargs={'chapter_slug': self.slug, 'manga_slug': self.manga.slug}
+            kwargs={'chapter_slug': self.slug, 'manga_slug': self.manga.slug, 'tomo_number': self.tomo}
             )
 
     class Meta:

@@ -30,7 +30,7 @@
               </form>
             </li>
             {% if user.is_authenticated %}
-            <li class="Menu-item_nav">
+            <li class="Menu-item_nav" id="username">
               {{ user.username }}
             </li>
             <li class="Menu-item_nav">
@@ -44,7 +44,7 @@
               <a href="{% url "userAccounts:singup" %}">Sign Up</a>
             </li>
             <li class="Menu-item_nav">
-              <a href="{% url "userAccounts:login" %}?next={{request.path}}">Log in</a>
+              <a href="{% url "userAccounts:login" %}">Log in</a>
             </li>
             {% endif %}
           </ul>

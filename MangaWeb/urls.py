@@ -15,12 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth.views import login, logout
 from django.conf import settings
 from django.conf.urls.static import static
-
-from manageManga.views import My404
-handler404 = 'manageManga.views.My404.as_view'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,8 +24,3 @@ urlpatterns = [
     url('', include('manageManga.urls', namespace='manageManga')),
     url('', include('userAccounts.urls', namespace='userAccounts')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if settings.DEBUG:
-    urlpatterns += [
-        url(r'^404/$', My404.as_view()),
-    ]

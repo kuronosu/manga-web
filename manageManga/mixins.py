@@ -1,9 +1,9 @@
 """Mixins"""
-from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import PermissionDenied
 
-from .models import Manga, Chapter, Voto
+from .models import Manga, Chapter, Voto, Tomo
 from .funct import frontend_permission, filter_obj_model
 
 class FilterMixin(object):
@@ -79,15 +79,17 @@ class StaffFormsMixin(object):
     def get_form_class(self):
         if self.request.user.is_staff:
             self.form_class = self.staff_form
-        return self.form_class
+        return super(StaffFormsMixin, self).get_form_class()
 
 class UserPermissionsMixin(object):
-    """Mixin para verificar si un usuario puede hacer modificaciones con respecto a un modelo"""
+    """Mixin para verificar si un usuario puede acceder a una vista."""
     def dispatch(self, request, *args, **kwargs):
-        slug = self.kwargs[self.permissions_slug_url_kwarg]
-        model_obj = get_object_or_404(self.permissions_model, slug=slug)
+        try:
+            model_obj = self.get_object()
+        except:
+            model_obj = self.get_permissions_object()
         if not (model_obj.author.id == self.request.user.id or self.request.user.is_staff):
-            return redirect('manageManga:manga_detail', slug=slug)
+            raise PermissionDenied("No tiene acceso.")
         return super(UserPermissionsMixin, self).dispatch(request, *args, **kwargs)
 
 class ExtraContextMixin(object):
@@ -111,22 +113,14 @@ class ExtraContextMixin(object):
                         )
                     try:
                         context_value = val[1](dict(vote_value=vote_object[0].vote_value))
-                    except IndexError as error:
-                        print(error)
+                    except IndexError:
                         context_value = val[1]()
             context[key] = context_value
         return context
 
 class ChapterAddMixin:
-    """ Mixin para la vista ChapterAddView """
+    """ Mixin para la vista ChapterAddView y ChapterUpdateView """
     def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests, instantiating a form instance with the passed
-        POST variables and then checked for validity.
-        ###
-        Y verifica si se crea un capitulo referenciado a un manga con un
-        numero de capitulo repetido.
-        """
         form = self.get_form()
         manga = get_object_or_404(Manga, slug=self.kwargs['manga_slug'])
         try:
@@ -134,11 +128,47 @@ class ChapterAddMixin:
             user_chapter_number = int(self.get_form_kwargs()['data']['user_chapter_number'])
             for i in chapters:
                 if i.user_chapter_number == user_chapter_number:
-                    form.add_error('user_chapter_number', _('Chapter number not available'))
+                    if self.object is None:
+                        form.add_error('user_chapter_number', _('Chapter number not available'))
+                    elif (self.object.number == user_chapter_number == i.number):
+                        pass
+                    else:
+                        form.add_error('user_chapter_number', _('Chapter number not available'))
         except ValueError:
-            form.add_error('user_chapter_number', _('Error interno.'))
+            pass
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
-        self.object = None
+    def form_valid(self, form):
+        manga_slug = self.kwargs['manga_slug']
+        tomo_number = self.kwargs['tomo_number']
+        manga = get_object_or_404(Manga, slug=manga_slug)
+        tomo = get_object_or_404(Tomo, manga=manga, number=tomo_number)
+        form.instance.manga = manga
+        form.instance.tomo = tomo
+        form.instance.author = self.request.user
+        return super(ChapterAddMixin, self).form_valid(form)
+
+class TomoAddMixin:
+    """ Mixin para la vista TomoAddView y TomoUpdateView"""
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        manga = get_object_or_404(Manga, slug=self.kwargs['manga_slug'])
+        try:
+            tomos = filter_obj_model(Tomo, manga__id=manga.id)
+            tomo_number = int(self.get_form_kwargs()['data']['number'])
+            for i in tomos:
+                if i.number == tomo_number:
+                    if self.object is None:
+                        form.add_error('number', _('Tomo number not available'))
+                    elif (self.object.number == tomo_number == i.number):
+                        pass
+                    else:
+                        form.add_error('number', _('Tomo number not available'))
+        except ValueError:
+            pass
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -149,4 +179,4 @@ class ChapterAddMixin:
         manga = get_object_or_404(Manga, slug=manga_slug)
         form.instance.manga = manga
         form.instance.author = self.request.user
-        return super(ChapterAddMixin, self).form_valid(form)
+        return super(TomoAddMixin, self).form_valid(form)

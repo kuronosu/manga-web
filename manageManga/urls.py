@@ -35,19 +35,39 @@ urlpatterns = [
         name='manga_delete'
     ),
     url(
-        r'^manga-(?P<manga_slug>[-\w]+)/chapter/add/$',
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo/add/$',
+        views.TomoAddView.as_view(),
+        name='tomo_add'
+    ),
+    url(
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>\d+)/edit/$',
+        views.TomoUpdateView.as_view(),
+        name='tomo_update'
+    ),
+    url(
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>\d+)/delete/$',
+        views.TomoDeleteView.as_view(),
+        name='tomo_delete'
+    ),
+    url(
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>[-\w]+)/$',
+        views.TomoDetailView.as_view(),
+        name='tomo_detail',
+    ),
+    url(
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>[-\w]+)/chapter/add/$',
         views.ChapterAddView.as_view(),
         name='chapter_add'
     ),
     url(
-        r'^manga-(?P<manga_slug>[-\w]+)/chapter-(?P<chapter_slug>[-\w]+)/$',
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>[-\w]+)/chapter-(?P<chapter_slug>[-\w]+)/$',
         views.ChapterDetailView.as_view(),
         name='chapter_detail',
     ),
     url(
-        r'^manga-(?P<manga_slug>[-\w]+)/chapter-(?P<chapter_slug>[-\w]+)/page-(?P<page>[0-9]+)/$',
+        r'^manga-(?P<manga_slug>[-\w]+)/tomo-(?P<tomo_number>[-\w]+)/chapter-(?P<chapter_slug>[-\w]+)/page-(?P<page>[0-9]+)/$',
         views.PageChapterDetailView.as_view(),
-        name='chapter_detail',
+        name='page_detail',
     ),
     url(
         r'^vote-manga-(?P<manga_slug>[-\w]+)/$',

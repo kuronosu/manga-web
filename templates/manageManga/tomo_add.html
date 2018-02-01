@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}crear tomo{% endblock title %}
+
+{% block content %}
+<h1>New Tomo</h1>
+<form class="" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <ul>
+    <li>
+      <div>
+        <label for="username">Usuario</label><br>
+        <input id="username" type="text" class="form-control" placeholder="{{ user }}" disabled="">
+      </div>
+    </li>
+      {% include "manageManga/form_snippets.html" %}
+  </ul>
+  <button type="submit" name="button">Submit</button>
+</form>
+{% endblock %}

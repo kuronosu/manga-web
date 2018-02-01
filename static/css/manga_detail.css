@@ -15,3 +15,6 @@
     border-radius: 100%;
     margin: 3px;
 }
+main{
+    display: flex;
+}

@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-from .models import Manga, Chapter, Voto
+from .models import Manga, Chapter, Voto, Tomo
 # from django.utils.translation import ugettext, ugettext_noop
 
 def set_field_html_name(obj, new_name):
@@ -107,7 +107,7 @@ class MangaRegistrationForm(forms.ModelForm):
         return super(MangaRegistrationForm, self).clean()
 
 class MangaEditForm(forms.ModelForm):
-    """Formulario para la creacion de mangas"""
+    """Formulario para editar mangas"""
 
     class Meta:
         """Meta clase"""
@@ -147,6 +147,25 @@ class VoteMangaForm(forms.ModelForm):
         fields = ['vote_value']
 
 ################################
+# Formularios de los Tomos #
+################################
+
+class TomoCreationForm(forms.ModelForm):
+    """Formulario para crear o actualizar tomos"""
+    class Meta:
+        """Meta clase"""
+        model = Tomo
+        fields = ['number']
+
+class StaffTomoEditForm(TomoCreationForm):
+    """TomoCreationForm para el staff"""
+    class Meta:
+        """Meta clase"""
+        model = Tomo
+        fields = '__all__'
+
+
+################################
 # Formularios de los capitulos #
 ################################
 
@@ -155,7 +174,7 @@ class ChapterRegistrationForm(forms.ModelForm):
     class Meta:
         """Meta clase"""
         model = Chapter
-        fields = ['content', 'user_chapter_number']
+        fields = ['content', 'user_chapter_number', 'name']
 
     def clean(self):
         content = self.cleaned_data.get('content')
