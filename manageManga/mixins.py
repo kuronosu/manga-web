@@ -92,18 +92,6 @@ class UserPermissionsMixin(object):
             raise PermissionDenied("No tiene acceso.")
         return super(UserPermissionsMixin, self).dispatch(request, *args, **kwargs)
 
-class ExtraContextMixin(object):
-    def get_context_data(self, **kwargs):
-        context = super(ExtraContextMixin, self).get_context_data(**kwargs)
-        context_value = False
-        for key, val in self.extra_context.items():
-            if key not in context:
-                if val[0] == 'frontend_permission':
-                    context_value = frontend_permission(self)
-            if context_value:
-                context[key] = context_value
-        return context
-
 class ChapterAddMixin:
     """ Mixin para la vista ChapterAddView y ChapterUpdateView """
     def post(self, request, *args, **kwargs):

@@ -22,20 +22,20 @@
   <p id='puntaje'>{{ manga.puntaje }}</p>
   {% endif %}
   <p>{{ manga.published_date }}</p>
-  {% if frontend_permission %}
-  <a href="{% url 'manageManga:manga_update' slug=manga.slug %}">Editar</a>
-  <a href="{% url 'manageManga:manga_delete' slug=manga.slug %}">Eliminar</a><br>
-    {% if manga.verify %}
-  <p>Verificado</p>
-    {% else %}
-  <p>No verificado</p>
-    {% endif %}
-  {% endif %}
   <span>Generos: </span><ul>
     {% for i in manga.genres.all %}
     <li>{{ i }}</li>
     {% endfor %}
   </ul>
+  {% if frontend_permission %}
+  {% if manga.verify %}
+  <p>Verificado</p>
+  {% else %}
+  <p>No verificado</p>
+  {% endif %}
+  <a href="{% url 'manageManga:manga_update' slug=manga.slug %}">Editar</a>
+  <a href="{% url 'manageManga:manga_delete' slug=manga.slug %}">Eliminar</a><br>
+  {% endif %}
 </div>
 
 <div>
@@ -56,7 +56,9 @@
 </div>
 <div>
   <div id="chapters" class="chapters"></div>
+  {% if frontend_permission %}
   <div><a id="add_chapter" href="">Añadir un capitulo a este tomo.</a></div>
+  {% endif %}
 </div>
 
 <div id="votes" action-url="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">

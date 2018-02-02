@@ -16,12 +16,11 @@ from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 
 from .models import Manga, Chapter, Voto, Tomo
-from .funct import filter_obj_model
+from .funct import filter_obj_model, frontend_permission
 from .mixins import (
     FilterMixin,
     StaffFormsMixin,
     UserPermissionsMixin,
-    ExtraContextMixin,
     ChapterAddMixin,
     TomoAddMixin
     )
@@ -75,15 +74,12 @@ class MangaAddView(LoginRequiredMixin, CreateView):
         tomo.save()
         return HttpResponseRedirect(self.get_success_url())
 
-class MangaDetailView(ExtraContextMixin, DetailView):
+class MangaDetailView(DetailView):
     """Vista de detalles de los mangas"""
     model = Manga
     slug_url_kwarg = 'slug'
     query_pk_and_slug = True
     template_name = 'manageManga/manga_detail.html'
-    extra_context = {
-        'frontend_permission': ['frontend_permission'],
-    }
 
     def dispatch(self, request, *args, **kwargs):
         manga = self.get_object()
@@ -105,6 +101,11 @@ class MangaDetailView(ExtraContextMixin, DetailView):
                 context['vote_form'] = VoteMangaForm(dict(vote_value=vote_object.vote_value))
             except:
                 context['vote_form'] = VoteMangaForm()
+        if 'frontend_permission' not in context:
+            context['frontend_permission'] = frontend_permission(self)
+
+        puntaje = str(round(context['manga'].puntaje, 2)).replace(',', '.')
+        context['manga'].puntaje = puntaje
         return context
 
 class MangaUpdateView(LoginRequiredMixin, UserPermissionsMixin, StaffFormsMixin, UpdateView):
