@@ -2,11 +2,13 @@
 from django.conf.urls import url
 from . import views
 
+app_name = 'userAccounts'
+
 urlpatterns = [
-    url(r'^login/', views.LogInView.as_view(), name='login'),
-    url(r'^logout/', views.LogOutView.as_view(), name='logout'),
+    url('login/', views.LogInView.as_view(), name='login'),
+    url('logout/', views.LogOutView.as_view(), name='logout'),
     url(
-        r'^singup/$', views.SingUpView.as_view(),
+        'singup/', views.SingUpView.as_view(),
         name='singup'
     )
 ]

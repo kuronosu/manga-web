@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-17 21:12+0000\n"
+"POT-Creation-Date: 2018-02-02 00:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,78 +17,126 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: MangaWeb/settings.py:127
+#: MangaWeb/settings.py:118
 msgid "Spanish"
 msgstr ""
 
-#: MangaWeb/settings.py:128
+#: MangaWeb/settings.py:119
 msgid "English"
 msgstr ""
 
-#: manageManga/forms.py:29
-msgid "Titulo del manga"
-msgstr ""
-
-#: manageManga/forms.py:30
-msgid "Description del manga"
-msgstr ""
-
+#. Translators: Mensaje que aparece cuando
+#. Translators: se intenta filtar con mas de un numero especifico de generos
 #. Translators: Mensaje que aparece cuando
 #. Translators: se intenta crear un manga con mas de un numero especifico de generos
 #. Translators: Mensaje que aparece cuando
-#. Translators: se intenta filtar con mas de un numero especifico de generos
-#: manageManga/forms.py:46 manageManga/forms.py:81
+#. Translators: se intenta editar un manga con mas de un numero especifico de generos
+#: manageManga/forms.py:56 manageManga/forms.py:102 manageManga/forms.py:133
 msgid "Select maximum {} geners"
 msgstr ""
 
-#: manageManga/forms.py:49
-msgid "Title not available"
-msgstr "Title not available"
-
-#: manageManga/forms.py:94 manageManga/forms.py:95
+#: manageManga/forms.py:69 manageManga/forms.py:70
 msgid "Search"
 msgstr ""
 
-#: manageManga/models.py:124 manageManga/models.py:173
+#: manageManga/forms.py:93
+msgid "Titulo del manga"
+msgstr ""
+
+#: manageManga/forms.py:94 manageManga/forms.py:124
+msgid "Description of manga"
+msgstr ""
+
+#: manageManga/forms.py:105
+msgid "Title not available"
+msgstr "Title not available"
+
+#: manageManga/forms.py:185
+msgid "Por favor suba un archivo pdf."
+msgstr ""
+
+#: manageManga/mixins.py:132 manageManga/mixins.py:136
+#, fuzzy
+#| msgid "Title not available"
+msgid "Chapter number not available"
+msgstr "Title not available"
+
+#: manageManga/mixins.py:165 manageManga/mixins.py:169
+#, fuzzy
+#| msgid "Title not available"
+msgid "Tomo number not available"
+msgstr "Title not available"
+
+#: manageManga/models.py:116 manageManga/models.py:179
+#: manageManga/models.py:226 manageManga/models.py:254
 msgid "Author"
 msgstr ""
 
-#: manageManga/models.py:127
+#: manageManga/models.py:119
 msgid "Title"
 msgstr ""
 
-#: manageManga/models.py:128
+#: manageManga/models.py:122
 msgid "Description"
 msgstr ""
 
-#: manageManga/models.py:132
+#: manageManga/models.py:128
 msgid "Published Date"
 msgstr ""
 
-#: manageManga/models.py:134
+#: manageManga/models.py:130
 msgid "State"
 msgstr ""
 
-#: manageManga/models.py:139 manageManga/models.py:182
+#: manageManga/models.py:135 manageManga/models.py:263
 msgid "Slug"
 msgstr ""
 
-#: manageManga/models.py:141
+#: manageManga/models.py:137
 msgid "Genres"
 msgstr ""
 
-#: manageManga/models.py:142
+#: manageManga/models.py:138
 msgid "Verify"
 msgstr ""
 
-#: manageManga/models.py:176
+#: manageManga/models.py:140
+msgid "Puntaje"
+msgstr ""
+
+#: manageManga/models.py:176 manageManga/models.py:225
+#: manageManga/models.py:253
+msgid "Manga"
+msgstr ""
+
+#: manageManga/models.py:183
+msgid "Voto"
+msgstr ""
+
+#: manageManga/models.py:222
+msgid "Numero del Tomo"
+msgstr ""
+
+#: manageManga/models.py:244
+msgid "Tomos"
+msgstr ""
+
+#: manageManga/models.py:245 manageManga/models.py:252
+msgid "Tomo"
+msgstr ""
+
+#: manageManga/models.py:257
 msgid "Chapter number"
 msgstr ""
 
-#: manageManga/models.py:179
+#: manageManga/models.py:260
 msgid "Name"
 msgstr ""
 
-#: manageManga/models.py:209
+#: manageManga/models.py:296
 msgid "Chapters"
+msgstr ""
+
+#: manageManga/models.py:297
+msgid "Chapter"
 msgstr ""

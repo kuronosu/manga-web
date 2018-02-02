@@ -8,11 +8,11 @@ from django.views.generic.edit import (
     DeleteView,
     ModelFormMixin,
     ProcessFormView,
-    BaseDetailView
+    BaseDetailView,
     )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 
 from .models import Manga, Chapter, Voto, Tomo
@@ -82,9 +82,7 @@ class MangaDetailView(ExtraContextMixin, DetailView):
     query_pk_and_slug = True
     template_name = 'manageManga/manga_detail.html'
     extra_context = {
-        'tomos': ['filter', Tomo, {'manga__id': 'id'}],
         'frontend_permission': ['frontend_permission'],
-        'vote_form': ['vote_form', VoteMangaForm]
     }
 
     def dispatch(self, request, *args, **kwargs):
@@ -98,6 +96,15 @@ class MangaDetailView(ExtraContextMixin, DetailView):
         context = super(MangaDetailView, self).get_context_data(**kwargs)
         if 'form_vote_files' not in context:
             context['form_vote_files'] = list(range(1, 11))
+        if 'tomos' not in context:
+            tomos = filter_obj_model(Tomo, manga=self.object)
+            context['tomos'] = tomos
+        if 'vote_form' not in context:
+            try:
+                vote_object = get_object_or_404(Voto ,manga=self.object,author=self.request.user)
+                context['vote_form'] = VoteMangaForm(dict(vote_value=vote_object.vote_value))
+            except:
+                context['vote_form'] = VoteMangaForm()
         return context
 
 class MangaUpdateView(LoginRequiredMixin, UserPermissionsMixin, StaffFormsMixin, UpdateView):
@@ -201,12 +208,12 @@ class TomoDetailView(BaseDetailView):
         chapters_query = filter_obj_model(Chapter, tomo=self.object)
         chapters = []
         for i in chapters_query:
-            kwargs = {
+            data_kwargs = {
                 'manga_slug': self.object.manga.slug,
                 'tomo_number': self.object.number,
                 'chapter_slug': i.slug
                 }
-            url = reverse_lazy('manageManga:chapter_detail', kwargs=kwargs)
+            url = reverse_lazy('manageManga:chapter_detail', kwargs=data_kwargs)
             chapters.append({
                 'number': i.user_chapter_number,
                 'name': i.name,
@@ -225,6 +232,10 @@ class TomoDetailView(BaseDetailView):
     def get_object(self, queryset=None):
         manga_slug = self.kwargs['manga_slug']
         tomo_number = self.kwargs['tomo_number']
+        try:
+            tomo_number = int(tomo_number)
+        except Exception:
+            raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
         return tomo
@@ -251,6 +262,10 @@ class TomoUpdateView(LoginRequiredMixin, UserPermissionsMixin, TomoAddMixin, Upd
     def get_object(self, queryset=None):
         manga_slug = self.kwargs['manga_slug']
         tomo_number = self.kwargs['tomo_number']
+        try:
+            tomo_number = int(tomo_number)
+        except Exception:
+            raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
         return tomo
@@ -265,6 +280,10 @@ class TomoDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
     def get_object(self, queryset=None):
         manga_slug = self.kwargs['manga_slug']
         tomo_number = self.kwargs['tomo_number']
+        try:
+            tomo_number = int(tomo_number)
+        except Exception:
+            raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
         return tomo
@@ -290,6 +309,10 @@ class ChapterAddView(LoginRequiredMixin, ChapterAddMixin, UserPermissionsMixin, 
     def dispatch(self, request, *args, **kwargs):
         manga_slug = self.kwargs['manga_slug']
         tomo_number = self.kwargs['tomo_number']
+        try:
+            tomo_number = int(tomo_number)
+        except Exception:
+            raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         queryset = filter_obj_model(Tomo, number=tomo_number, manga__id=manga.id)
         try:
@@ -318,6 +341,10 @@ class ChapterDetailView(DetailView):
     def get_object(self, queryset=None):
         manga_slug = self.kwargs['manga_slug']
         tomo_number = self.kwargs['tomo_number']
+        try:
+            tomo_number = int(tomo_number)
+        except Exception:
+            raise Http404()
         chapter_slug = self.kwargs['chapter_slug']
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga__id=manga.id)
@@ -349,3 +376,20 @@ class ProfileView(ListView):
         query = super(ProfileView, self).get_queryset()
         eventos_usuario = query.filter(author=self.request.user)
         return eventos_usuario
+
+
+from django import forms
+from django.conf.urls import url
+from django.http import HttpResponse
+from .models import Genre
+
+class GenreForm(forms.ModelForm):
+    class Meta:
+        model = Genre
+        fields = ['genre']
+
+def create_genres(request):
+    for i in Genre.GENRE_CHOICES:
+        genero = GenreForm({'genre':i[0]})
+        genero.save()
+    return HttpResponse()

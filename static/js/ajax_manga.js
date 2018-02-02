@@ -46,7 +46,6 @@ $(function(){
         alert('Error')
       },
       success: function(data) {
-        console.log('ajax')
         let resultado = $('<h4>')
         data.chapters.forEach(element => {
           resultado.append($('<a>', {

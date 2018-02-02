@@ -36,25 +36,23 @@
     <li>{{ i }}</li>
     {% endfor %}
   </ul>
+</div>
+
+<div>
   <span>Tomos: </span><ul id="tomos">
     {% csrf_token %}
     {% for tomo in tomos %}
     {% if tomo.number == -1 %}
-      <li>
-        <a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">Sin Tomo</a>
-      </li>
+    <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">Sin Tomo</a></li>
     {% else %}
-      <li>
-        <a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">{{tomo.number}}</a>
-      </li>
+    <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">{{tomo.number}}</a></li>
     {% endif %}
     {% endfor %}
-  
     {% if frontend_permission %}
     <a href="{% url 'manageManga:tomo_add' manga_slug=manga.slug  %} ">Añadir tomo</a>
     {% endif %}
-  
   </ul>
+
 </div>
 <div>
   <div id="chapters" class="chapters"></div>

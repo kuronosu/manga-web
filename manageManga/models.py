@@ -127,7 +127,7 @@ class Manga(models.Model):
         auto_now=False,
         verbose_name=_('Published Date')
         )
-    state = models.ForeignKey(State, verbose_name=_('State'))
+    state = models.ForeignKey(State, verbose_name=_('State'), on_delete=models.CASCADE)
     slug = models.SlugField(
         max_length=100,
         default=defaultfilters.slugify(title),
@@ -173,7 +173,7 @@ class Voto(models.Model):
         (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
         (6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
     )
-    manga = models.ForeignKey(Manga)
+    manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('Author'),
@@ -222,8 +222,8 @@ class Tomo(models.Model):
         verbose_name=_('Numero del Tomo'),
         validators=[MinValueValidator(-1)]
         )
-    manga = models.ForeignKey(Manga)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
+    manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         """Retorna la detail ulr para cada objeto de este modelo"""
@@ -249,9 +249,9 @@ class Chapter(models.Model):
     """
     Modelo de capitulos
     """
-    tomo = models.ForeignKey(Tomo)
-    manga = models.ForeignKey(Manga)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'))
+    tomo = models.ForeignKey(Tomo, verbose_name=_('Tomo'), on_delete=models.CASCADE)
+    manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.CASCADE)
     content = models.FileField(upload_to=user_directory_path, verbose_name='Content')
     user_chapter_number = models.IntegerField(
         verbose_name=_('Chapter number'),

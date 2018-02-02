@@ -95,27 +95,13 @@ class UserPermissionsMixin(object):
 class ExtraContextMixin(object):
     def get_context_data(self, **kwargs):
         context = super(ExtraContextMixin, self).get_context_data(**kwargs)
+        context_value = False
         for key, val in self.extra_context.items():
             if key not in context:
-                if val[0] == 'filter':
-                    filter_dic = {}
-                    for i, j in val[2].items():
-                        if j == 'id':
-                            filter_dic[i] = self.object.id
-                    context_value = filter_obj_model(val[1], **filter_dic)
-                elif val[0] == 'frontend_permission':
+                if val[0] == 'frontend_permission':
                     context_value = frontend_permission(self)
-                elif val[0] == 'vote_form':
-                    vote_object = filter_obj_model(
-                        Voto,
-                        manga__id=self.object.id,
-                        author__id=self.request.user.id
-                        )
-                    try:
-                        context_value = val[1](dict(vote_value=vote_object[0].vote_value))
-                    except IndexError:
-                        context_value = val[1]()
-            context[key] = context_value
+            if context_value:
+                context[key] = context_value
         return context
 
 class ChapterAddMixin:
