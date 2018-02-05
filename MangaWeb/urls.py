@@ -22,6 +22,6 @@ from manageManga.views import HomeView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',HomeView.as_view(),name='home'),
-    path('manga/', include('manageManga.urls')),
-    path('accounts/', include('userAccounts.urls'))
+    path('manga/', include('manageManga.urls', namespace='manageManga')),
+    path('accounts/', include('accounts.urls', namespace='accounts'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

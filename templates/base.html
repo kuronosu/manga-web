@@ -10,6 +10,7 @@
     <script src="{% static 'js/jquery/jquery.js' %}"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     {% block static_files %}{% endblock static_files %}
+    {% block css %}{% endblock css %}
   </head>
   <body>
     <section class="container">
@@ -37,14 +38,14 @@
               <a href="{% url "manageManga:manga_add" %}">New Manga</a>
             </li>
             <li class="Menu-item">
-              <a href="{% url "userAccounts:logout" %}">Log out</a>
+              <a href="{% url "accounts:logout" %}?next={{request.path}}">Log out</a>
             </li>
             {% else %}
             <li class="Menu-item_nav">
-              <a href="{% url "userAccounts:singup" %}">Sign Up</a>
+              <a href="{% url "accounts:singup" %}?next={{request.path}}">Sign Up</a>
             </li>
             <li class="Menu-item_nav">
-              <a href="{% url "userAccounts:login" %}">Log in</a>
+              <a href="{% url "accounts:login" %}?next={{request.path}}">Log in</a>
             </li>
             {% endif %}
           </ul>
