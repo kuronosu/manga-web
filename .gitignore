@@ -1,5 +1,9 @@
 *.pyc
-__pycache__
+*.py[cod]
+__pycache__/
 .vscode
 db.sqlite3
 media/*
+*.log
+*.pot
+local_settings.py
