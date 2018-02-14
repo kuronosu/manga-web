@@ -59,7 +59,7 @@ class MangaListAndFilterView(FilterMixin, ListView):
 
 class MangaAddView(LoginRequiredMixin, CreateView):
     """Vista de para crear un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Manga
     template_name = 'manageManga/manga_add.html'
     form_class = MangaRegistrationForm
@@ -110,7 +110,7 @@ class MangaDetailView(DetailView):
 
 class MangaUpdateView(LoginRequiredMixin, UserPermissionsMixin, StaffFormsMixin, UpdateView):
     """Vista de para actualizar un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Manga
     form_class = MangaEditForm
     slug_url_kwarg = 'slug'
@@ -122,7 +122,7 @@ class MangaUpdateView(LoginRequiredMixin, UserPermissionsMixin, StaffFormsMixin,
 
 class MangaDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
     """Vista de para eliminar un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Manga
     slug_url_kwarg = 'slug'
     query_pk_and_slug = True
@@ -138,7 +138,7 @@ class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
     """ Vista para manejar los votos de un manga """
     model = Voto
     form_class = VoteMangaForm
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
 
     def post(self, request, *args, **kwargs):
         votos = filter_obj_model(
@@ -179,7 +179,7 @@ Vistas de los tomos
 
 class TomoAddView(LoginRequiredMixin, TomoAddMixin, UserPermissionsMixin, CreateView):
     """Vista de para crear un tomo de un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Tomo
     template_name_suffix = '_add'
     form_class = TomoCreationForm
@@ -243,7 +243,7 @@ class TomoDetailView(BaseDetailView):
 
 class TomoUpdateView(LoginRequiredMixin, UserPermissionsMixin, TomoAddMixin, UpdateView):
     """Vista de para actualizar un tomo de un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Tomo
     form_class = TomoCreationForm
     template_name_suffix = '_update'
@@ -273,7 +273,7 @@ class TomoUpdateView(LoginRequiredMixin, UserPermissionsMixin, TomoAddMixin, Upd
 
 class TomoDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
     model = Tomo
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     success_url = reverse_lazy('manageManga:list_of_mangas')
     permissions_slug_url_kwarg = 'manga_slug'
     permissions_model = Manga
@@ -300,7 +300,7 @@ Vistas de los capitulos
 
 class ChapterAddView(LoginRequiredMixin, ChapterAddMixin, UserPermissionsMixin, CreateView):
     """Vista de para crear un capitulo de un manga"""
-    login_url = reverse_lazy('userAccounts:login')
+    login_url = reverse_lazy('accounts:login')
     model = Chapter
     template_name_suffix = '_add'
     form_class = ChapterRegistrationForm
@@ -377,20 +377,3 @@ class ProfileView(ListView):
         query = super(ProfileView, self).get_queryset()
         eventos_usuario = query.filter(author=self.request.user)
         return eventos_usuario
-
-
-from django import forms
-from django.conf.urls import url
-from django.http import HttpResponse
-from .models import Genre
-
-class GenreForm(forms.ModelForm):
-    class Meta:
-        model = Genre
-        fields = ['genre']
-
-def create_genres(request):
-    for i in Genre.GENRE_CHOICES:
-        genero = GenreForm({'genre':i[0]})
-        genero.save()
-    return HttpResponse()
