@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 
-from .models import Manga, Chapter, Voto, Tomo
+from .models import Manga, Chapter, Voto, Tomo, Page
 from .funct import filter_obj_model, frontend_permission
 from .mixins import (
     FilterMixin,
@@ -355,6 +355,15 @@ class ChapterDetailView(DetailView):
             tomo=tomo
             )
         return super(ChapterDetailView, self).get_object(queryset=queryset)
+    
+    def get_context_data(self, **kwargs):
+        context = super(ChapterDetailView, self).get_context_data(**kwargs)
+        if 'pages' not in context:
+            pages = filter_obj_model(Page, chapter=self.object)
+            pages = Page.objects.all().filter(chapter=self.object)
+            context['pages'] = pages
+            print(pages, self.object)
+        return context
 
 """
 Vistas Extras

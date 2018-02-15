@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load static %}
 
 {% block title %}
 {% if chapter.name %}
@@ -9,14 +9,14 @@
 {% endblock title %}
 
 {% block static_files %}
-{% comment %} <style>
-    #portapdf { 
-        width: 500px; 
-        height: 300px; 
+<script src="{% static 'js/ajax_chapter.js' %}"></script>
+<style>
+    #pageImage img{ 
+        width: 400px;
         border: 1px solid #484848;
-        margin: 0 auto; 
+        margin: 0 auto;
     }
-</style> {% endcomment %}
+</style>
 {% endblock static_files %}
 
 {% block content %}
@@ -24,7 +24,9 @@
 <p>{{ chapter.owner }}</p>
 <p>{{ chapter.user_chapter_number }}</p>
 <p>{{ chapter.name }}</p>
-<div id="portapdf">
-    <object data="{{ chapter.content.url }}#toolbar=0&page={{page}}" type="application/pdf" width="500" height="700"></object> 
+<button id="previous">Anterior</button>
+<button id="next">Sigiente</button>
+<div id="pageImage">
+    <img src="/media/{{pages.0.image}}" alt="pagina {{pages.0.number}}">
 </div>
 {% endblock content %}

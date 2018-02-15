@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 
-from .funct import filter_obj_model, user_directory_path
+from .funct import filter_obj_model, user_directory_path, page_path
 
 class Genre(models.Model):
     """
@@ -292,6 +292,26 @@ class Chapter(models.Model):
 
     class Meta:
         """Meta clase"""
-        ordering = ["slug"]
+        ordering = ["user_chapter_number"]
         verbose_name_plural = _('Chapters')
         verbose_name = _('Chapter')
+
+class Page(models.Model):
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, verbose_name=_('Capitulo'))
+    number = models.IntegerField(
+        verbose_name=_('Numero de la Página'),
+        validators=[MinValueValidator(1)]
+        )
+    image = models.ImageField(upload_to=page_path)
+
+    def __str__(self):
+        return str(self.number)
+
+    def __unicode__(self):
+        return str(self.number)
+    
+    class Meta:
+        """Meta clase"""
+        ordering = ["number"]
+        verbose_name_plural = _('Pages')
+        verbose_name = _('Page')

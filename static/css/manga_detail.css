@@ -18,3 +18,6 @@
 main{
     display: flex;
 }
+#detalles{
+    max-width: 30%;
+}

@@ -9,7 +9,7 @@
 {% endblock static_files %}
 
 {% block content %}
-<div>
+<div id="detalles"
 
   <h1>{{ manga.title }}</h1>
   <img src="{{ manga.image.url }}" alt="" style="max-width: 190px;max-height: 260px;">
@@ -76,3 +76,5 @@
   {% endfor %}
 </div>
 {% endblock content %}
+
+<img oncontextmenu="return false;" ng-style="lector.opciones.fullWidth &amp;&amp; {'width':'100%'}" ng-src="https://img1.tumangaonline.com/subidas/8206/366.00/1883/366-1_5a7234c12df8b.jpg" src="https://img1.tumangaonline.com/subidas/8206/366.00/1883/366-1_5a7234c12df8b.jpg">

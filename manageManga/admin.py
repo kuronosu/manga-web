@@ -1,6 +1,6 @@
 """Admin: Register your models here."""
 from django.contrib import admin
-from .models import Manga, Genre, State, Chapter, Voto, Tomo
+from .models import Manga, Genre, State, Chapter, Voto, Tomo, Page
 
 
 class AdminManga(admin.ModelAdmin):
@@ -53,9 +53,17 @@ class AdminTomo(admin.ModelAdmin):
     search_fields = ['number', 'author']
     ordering = ["id"]
 
+class AdminPage(admin.ModelAdmin):
+    list_display = ['id', 'chapter', 'number', 'image']
+    list_display_links = ['id']
+    list_filter = ['chapter']
+    ordering = ["id"]
+
+
 admin.site.register(Manga, AdminManga)
 admin.site.register(Chapter, AdminChapter)
 admin.site.register(Genre, AdminGenre)
 admin.site.register(State, AdminState)
 admin.site.register(Voto, AdminVoto)
 admin.site.register(Tomo, AdminTomo)
+admin.site.register(Page, AdminPage)

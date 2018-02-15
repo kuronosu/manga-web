@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-from .models import Manga, Chapter, Voto, Tomo
+from .models import Manga, Chapter, Voto, Tomo, Page
 # from django.utils.translation import ugettext, ugettext_noop
 
 def set_field_html_name(obj, new_name):
@@ -184,3 +184,14 @@ class ChapterRegistrationForm(forms.ModelForm):
         if tipo != 'pdf':
             self.add_error('content', _('Por favor suba un archivo pdf.'))
         return super(ChapterRegistrationForm, self).clean()
+
+################################
+# Formularios de las paginas   #
+################################
+
+class PageRegistrationForm(forms.ModelForm):
+    """Formulario para la creacion de capitulos"""
+    class Meta:
+        """Meta clase"""
+        model = Page
+        fields = ['number']

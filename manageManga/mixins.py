@@ -2,9 +2,13 @@
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
+from django.template import defaultfilters
+from django.http import HttpResponseRedirect 
 
-from .models import Manga, Chapter, Voto, Tomo
+from .pdfManager import extract_page
+from .models import Manga, Chapter, Voto, Tomo, Page
 from .funct import frontend_permission, filter_obj_model
+from .forms import PageRegistrationForm
 
 class FilterMixin(object):
     """Mixin Filter for MangaListAndFilterView"""
@@ -123,7 +127,16 @@ class ChapterAddMixin:
         form.instance.manga = manga
         form.instance.tomo = tomo
         form.instance.author = self.request.user
-        return super(ChapterAddMixin, self).form_valid(form)
+        form.instance.content.name = defaultfilters.slugify(form.instance.content.name)
+        self.object = form.save()
+        created_pages = extract_page(self.object.content.name)
+        for i in created_pages:
+            page_form = PageRegistrationForm({'number': int(i.number)})
+            page_form.instance.chapter = self.object
+            page_form.instance.image = i.path.split('media/')[-1:][0] + i.formato
+            page_form.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 class TomoAddMixin:
     """ Mixin para la vista TomoAddView y TomoUpdateView"""
