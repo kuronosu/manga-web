@@ -7,8 +7,9 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+import os
 
-from .funct import filter_obj_model, user_directory_path, page_path
+from .funct import filter_obj_model, user_directory_path
 
 class Genre(models.Model):
     """
@@ -252,7 +253,7 @@ class Chapter(models.Model):
     tomo = models.ForeignKey(Tomo, verbose_name=_('Tomo'), on_delete=models.CASCADE)
     manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.CASCADE)
-    content = models.FileField(upload_to=user_directory_path, verbose_name='Content')
+    content = models.FileField(upload_to=user_directory_path, verbose_name=_('PDF field'), help_text=_("Este no se puede modificar luego."))
     user_chapter_number = models.IntegerField(
         verbose_name=_('Chapter number'),
         validators=[MinValueValidator(1)]
@@ -264,7 +265,7 @@ class Chapter(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = defaultfilters.slugify(self.user_chapter_number)
-        string_name = "{}_{}_{}.pdf".format(
+        string_name = "%s_%s_%s.pdf"%(
             str(self.manga),
             str(self.tomo),
             str(self.user_chapter_number)
@@ -276,6 +277,10 @@ class Chapter(models.Model):
             using=using,
             update_fields=update_fields
             )
+
+    def delete(self, *args, **kwargs):
+        os.remove(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, self.content.name)))
+        super(Chapter, self).delete(*args,**kwargs)
 
     def __str__(self):
         return str(self.user_chapter_number)
@@ -302,14 +307,18 @@ class Page(models.Model):
         verbose_name=_('Numero de la Página'),
         validators=[MinValueValidator(1)]
         )
-    image = models.ImageField(upload_to=page_path)
+    image = models.ImageField(upload_to=user_directory_path)
+
+    def delete(self, *args, **kwargs):
+        os.remove(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, self.image.name)))
+        super(Page, self).delete(*args,**kwargs)
 
     def __str__(self):
         return str(self.number)
 
     def __unicode__(self):
         return str(self.number)
-    
+
     class Meta:
         """Meta clase"""
         ordering = ["number"]

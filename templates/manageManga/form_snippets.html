@@ -2,8 +2,9 @@
     <li>
         <div>
             {{ field.errors }}
-            {{ field.label_tag }} <br>
+            {{ field.label_tag }}
             {{ field }}
+            {{ field.help_text }}
         </div>
-    </li>
+    </li><br>
 {% endfor %}

@@ -15,6 +15,7 @@ urlpatterns = [
         views.MangaListAndFilterView.as_view(),
         name='list_of_mangas'
     ),
+    #Urls para los mangas
     path(
         'add/',
         views.MangaAddView.as_view(),
@@ -35,10 +36,16 @@ urlpatterns = [
         views.MangaDeleteView.as_view(),
         name='manga_delete'
     ),
+    #Urls para los tomos
     path(
         '<str:manga_slug>/tomo/add/',
         views.TomoAddView.as_view(),
         name='tomo_add'
+    ),
+    path(
+        r'<str:manga_slug>/tomo/<str:tomo_number>/',
+        views.TomoDetailView.as_view(),
+        name='tomo_detail',
     ),
     path(
         '<str:manga_slug>/tomo-<str:tomo_number>/edit/',
@@ -50,11 +57,7 @@ urlpatterns = [
         views.TomoDeleteView.as_view(),
         name='tomo_delete'
     ),
-    path(
-        r'<str:manga_slug>/tomo/<str:tomo_number>/',
-        views.TomoDetailView.as_view(),
-        name='tomo_detail',
-    ),
+    #Urls para los capitulos
     path(
         '<str:manga_slug>/tomo/<str:tomo_number>/chapter/add/',
         views.ChapterAddView.as_view(),
@@ -66,18 +69,19 @@ urlpatterns = [
         name='chapter_detail',
     ),
     path(
-        '<str:manga_slug>/tomo/<str:tomo_number>/chapter-<str:chapter_slug>/page-<int:page>/',
-        views.PageChapterDetailView.as_view(),
-        name='page_detail',
+        '<str:manga_slug>/tomo/<str:tomo_number>/chapter-<str:chapter_slug>/edit',
+        views.ChapterUpdateView.as_view(),
+        name='chapter_update'
     ),
     path(
-        'vote/<str:manga_slug>/',
+        '<str:manga_slug>/tomo/<str:tomo_number>/chapter-<str:chapter_slug>/delete',
+        views.ChapterDeleteView.as_view(),
+        name='chapter_delete'
+    ),
+    #Url para votar
+    path(
+        '<str:manga_slug>/vote/',
         views.VoteView.as_view(),
         name='vote_manga'
-    ),
-    path(
-        'my/',
-        views.ProfileView.as_view(),
-        name='my_mangas'
     ),
 ]

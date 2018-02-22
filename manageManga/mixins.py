@@ -3,9 +3,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.template import defaultfilters
-from django.http import HttpResponseRedirect 
+from django.http import HttpResponseRedirect, Http404
 
-from .pdfManager import extract_page
 from .models import Manga, Chapter, Voto, Tomo, Page
 from .funct import frontend_permission, filter_obj_model
 from .forms import PageRegistrationForm
@@ -96,7 +95,7 @@ class UserPermissionsMixin(object):
             raise PermissionDenied("No tiene acceso.")
         return super(UserPermissionsMixin, self).dispatch(request, *args, **kwargs)
 
-class ChapterAddMixin:
+class ChapterMixin:
     """ Mixin para la vista ChapterAddView y ChapterUpdateView """
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -106,39 +105,21 @@ class ChapterAddMixin:
             user_chapter_number = int(self.get_form_kwargs()['data']['user_chapter_number'])
             for i in chapters:
                 if i.user_chapter_number == user_chapter_number:
-                    if self.object is None:
+                    if self.get_object() is None:
                         form.add_error('user_chapter_number', _('Chapter number not available'))
-                    elif (self.object.number == user_chapter_number == i.number):
+                    elif (self.get_object().user_chapter_number == user_chapter_number == i.user_chapter_number):
                         pass
                     else:
                         form.add_error('user_chapter_number', _('Chapter number not available'))
         except ValueError:
             pass
+
         if form.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):
-        manga_slug = self.kwargs['manga_slug']
-        tomo_number = self.kwargs['tomo_number']
-        manga = get_object_or_404(Manga, slug=manga_slug)
-        tomo = get_object_or_404(Tomo, manga=manga, number=tomo_number)
-        form.instance.manga = manga
-        form.instance.tomo = tomo
-        form.instance.author = self.request.user
-        form.instance.content.name = defaultfilters.slugify(form.instance.content.name)
-        self.object = form.save()
-        created_pages = extract_page(self.object.content.name)
-        for i in created_pages:
-            page_form = PageRegistrationForm({'number': int(i.number)})
-            page_form.instance.chapter = self.object
-            page_form.instance.image = i.path.split('media/')[-1:][0] + i.formato
-            page_form.save()
-
-        return HttpResponseRedirect(self.get_success_url())
-
-class TomoAddMixin:
+class TomoMixin:
     """ Mixin para la vista TomoAddView y TomoUpdateView"""
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -166,4 +147,15 @@ class TomoAddMixin:
         manga = get_object_or_404(Manga, slug=manga_slug)
         form.instance.manga = manga
         form.instance.author = self.request.user
-        return super(TomoAddMixin, self).form_valid(form)
+        return super(TomoMixin, self).form_valid(form)
+
+class NoEditTomo(object):
+    """Mixin para evitar modificar el tomo -1 o default."""
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            tomo_number = int(kwargs['tomo_number'])
+            if tomo_number == -1:
+                raise Http404()
+        except ValueError:
+            pass
+        return super(NoEditTomo, self).dispatch(request, *args, **kwargs)

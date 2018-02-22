@@ -36,7 +36,7 @@ def recurse(page, xObject, abspath):
                 img.close()
         else:
             recurse(page, xObject[obj], abspath)
-        return(imagenamepath, formato)
+    return(imagenamepath, formato)
 
 def extract_page(filename):
     file = PyPDF2.PdfFileReader(open(settings.BASE_DIR + "/media/" + filename, "rb"))
@@ -45,7 +45,20 @@ def extract_page(filename):
     created_pages = []
     for p in pages:
         page0 = file.getPage(p-1)
-        imagenamepath, formato = recurse(p, page0, abspath)
-        page = Page(p, imagenamepath, formato)
-        created_pages.append(page)
+        if verify(page0):
+            imagenamepath, formato = recurse(p, page0, abspath)
+            page = Page(p, imagenamepath, formato)
+            created_pages.append(page)
+        else:
+            return False
     return created_pages
+
+def verify(xObject):
+    try:
+        xObject = xObject['/Resources']['/XObject'].getObject()
+        for obj in xObject:
+            if xObject[obj]['/Subtype'] == '/Image':
+                return True
+        return False
+    except:
+        return False

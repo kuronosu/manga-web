@@ -50,16 +50,14 @@
     margin: 1em;
     box-shadow: 3px 3px 20px #afacac;
     max-width: 190px;
-    max-height: 262px;
+    max-height: 260px;
 }
 .Manga-item{
     margin: 0;
 }
 .Manga-image{
     max-width: 190px;
-    max-height: 260px;
-    width: 190px;
-    height: auto;
+    max-height: 210px;
 }
 .Manga-title{
     padding: 0.5em;

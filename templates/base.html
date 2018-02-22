@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Tu Manga{% endblock title %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
-    <script src="{% static 'js/jquery/jquery.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     {% block static_files %}{% endblock static_files %}
     {% block css %}{% endblock css %}
@@ -61,8 +61,6 @@
         {% block footer %}{% endblock footer %}
       </footer>
   
-      <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-      <script src="{% static 'js/jquery/jquery.js' %}"></script>
       <script src="{% static 'js/app.js' %}"></script>
   
       {% block javascript %}{% endblock javascript %}

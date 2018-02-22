@@ -21,3 +21,6 @@ main{
 #detalles{
     max-width: 30%;
 }
+p{
+    word-wrap: break-word;
+}

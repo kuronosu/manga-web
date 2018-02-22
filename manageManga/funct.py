@@ -13,17 +13,7 @@ def user_directory_path(instance, filename):
     Funcion que añade retorna una path segun los datos y usuario y archivo
     """
     # file will be uploaded to MEDIA_ROOT/manga/chapter/user_<id>/<filename>
-    return 'manga/user_{0}_{1}/chapter-{3}/{2}'.format(
+    return 'manga/user_{}/{}'.format(
         instance.author.id,
-        instance.author.username,
         filename,
-        instance.user_chapter_number
-        )
-
-def page_path(instance, filename):
-    return 'manga/user_{0}_{1}/chapter-{3}/page/{2}'.format(
-        instance.author.id,
-        instance.author.username,
-        filename,
-        instance.chapter.user_chapter_number
         )

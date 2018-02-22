@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Delete tomo: {{ object }}{% endblock title %}
+
+{% block static_files %}
+
+{% endblock static_files %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+<p>estas seguro que quieres borrar?</p>
+<p>Al borrar este tomo tambien se eliminaran todos los capitulos asociados a el.</p>
+<h1>{{ object }}</h1>
+<input type="submit" value="Confirm" />
+</form>
+{% endblock content %}

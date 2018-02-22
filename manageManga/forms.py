@@ -3,6 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from .models import Manga, Chapter, Voto, Tomo, Page
+from .funct import filter_obj_model
 # from django.utils.translation import ugettext, ugettext_noop
 
 def set_field_html_name(obj, new_name):
@@ -101,7 +102,7 @@ class MangaRegistrationForm(forms.ModelForm):
                 # Translators: se intenta crear un manga con mas de un numero especifico de generos
                 self.add_error('genres', _('Select maximum {} geners'.format(self.MAXGENRES)))
         slug_text = slugify(self.cleaned_data.get('title'))
-        if Manga.objects.filter(slug=slug_text).exists():
+        if filter_obj_model(Manga, slug=slug_text).exists():
             self.add_error('title', _('Title not available'))
 
         return super(MangaRegistrationForm, self).clean()
@@ -184,6 +185,13 @@ class ChapterRegistrationForm(forms.ModelForm):
         if tipo != 'pdf':
             self.add_error('content', _('Por favor suba un archivo pdf.'))
         return super(ChapterRegistrationForm, self).clean()
+    
+class ChapterUpdateForm(forms.ModelForm):
+    """" Formulario para actualizar capitulos """
+    class Meta:
+        """Meta clase"""
+        model = Chapter
+        fields = ['user_chapter_number', 'name']
 
 ################################
 # Formularios de las paginas   #
