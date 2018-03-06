@@ -17,9 +17,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from manageManga.views import HomeView
+from manageManga.views import HomeView, ajax
 
 urlpatterns = [
+    path('ajax', ajax, name="ajax"),
     path('admin/', admin.site.urls),
     path('',HomeView.as_view(),name='home'),
     path('manga/', include('manageManga.urls', namespace='manageManga')),

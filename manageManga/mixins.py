@@ -89,6 +89,8 @@ class UserPermissionsMixin(object):
     def dispatch(self, request, *args, **kwargs):
         try:
             model_obj = self.get_object()
+            if model_obj is None:
+                model_obj = self.get_permissions_object()
         except:
             model_obj = self.get_permissions_object()
         if not (model_obj.author.id == self.request.user.id or self.request.user.is_staff):
@@ -155,7 +157,7 @@ class NoEditTomo(object):
         try:
             tomo_number = int(kwargs['tomo_number'])
             if tomo_number == -1:
-                raise Http404()
+                raise Http404("Este tomo no se puede modificar.")
         except ValueError:
             pass
         return super(NoEditTomo, self).dispatch(request, *args, **kwargs)

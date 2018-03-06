@@ -14,7 +14,7 @@ from django.views.generic.edit import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import defaultfilters
 from django.conf import settings
 import os
@@ -244,7 +244,7 @@ class TomoDetailView(BaseDetailView):
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
@@ -274,7 +274,7 @@ class TomoUpdateView(LoginRequiredMixin, NoEditTomo, UserPermissionsMixin, TomoM
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
@@ -292,7 +292,7 @@ class TomoDeleteView(LoginRequiredMixin, NoEditTomo, UserPermissionsMixin, Delet
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         tomo = get_object_or_404(Tomo, number=tomo_number, manga=manga)
@@ -321,7 +321,7 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         manga = get_object_or_404(Manga, slug=manga_slug)
         queryset = filter_obj_model(Tomo, number=tomo_number, manga=manga)
@@ -352,6 +352,9 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
             form.add_error('content', _('Error al procesar el archivo'))
             context = instance.get_context_data()
             context['form'] = form
+            if instance.request.is_ajax():
+                form.errors['ajax_status'] = 0
+                return JsonResponse(form.errors)
             return instance.render_to_response(context)
 
         if created_pages:
@@ -361,8 +364,13 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
                     page_form.instance.chapter = self.object
                     page_form.instance.image = i.path.split('media/')[-1:][0] + i.formato
                     page_form.save()
+                if self.request.is_ajax():
+                    context = {}
+                    context['redirect_url'] = self.object.get_absolute_url()
+                    context['ajax_status'] = 1
+                    return JsonResponse(context)
                 return HttpResponseRedirect(self.get_success_url())
-            except:
+            except Exception as e:
                 return back_changes(self, form)
         else:
             return back_changes(self, form)
@@ -370,6 +378,15 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
     def post(self, request, *args, **kwargs):
         self.object = None
         return super(ChapterAddView, self).post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return None
+    
+    def form_invalid(self, form):
+        if self.request.is_ajax():
+            form.errors['ajax_status'] = 0
+            return JsonResponse(form.errors)
+        return super(ChapterAddView, self).form_invalid(form)
 
 class ChapterDetailView(DetailView):
     """Vista de detalles de los mangas"""
@@ -384,7 +401,7 @@ class ChapterDetailView(DetailView):
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         chapter_slug = self.kwargs['chapter_slug']
         manga = get_object_or_404(Manga, slug=manga_slug)
@@ -404,7 +421,7 @@ class ChapterDetailView(DetailView):
         return context
 
 class ChapterUpdateView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, UpdateView):
-    """Vista de para crear un capitulo de un manga"""
+    """Vista de para crear un capiCreatetulo de un manga"""
     login_url = reverse_lazy('accounts:login')
     model = Chapter
     template_name_suffix = '_update'
@@ -417,7 +434,7 @@ class ChapterUpdateView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, 
         tomo_number = self.kwargs['tomo_number']
         try:
             tomo_number = int(tomo_number)
-        except Exception:
+        except ValueError:
             raise Http404()
         chapter_slug = self.kwargs['chapter_slug']
         manga = get_object_or_404(Manga, slug=manga_slug)
@@ -533,3 +550,17 @@ class ChapterDeleteView(LoginRequiredMixin,UserPermissionsMixin , DeleteView):
         slug = self.kwargs[self.permissions_slug_url_kwarg]
         manga = get_object_or_404(self.permissions_model, slug=slug)
         return manga
+
+
+def ajax(request):
+    """ Vista para hacer pruebas de las peticiones con ajax"""
+    if request.is_ajax():
+        print("Ajax")
+        data = {"con": True}
+        print(request.GET)
+        print(request.POST)
+        print(request.FILES)
+        return JsonResponse(data)
+    else:
+        print("Not Ajax")
+        return render(request, "test.html")
