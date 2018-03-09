@@ -1,39 +1,6 @@
-body{
-    font-family: 'Roboto', sans-serif;
-    padding: 0;
-    margin: 0;
+button:focus {
+    outline: 0;
 }
-a{
-    text-decoration: none;
-}
-.Menu_nav{
-    padding: .3em;
-    background: #3b4248;
-    display: flex;
-    justify-content: space-between;
-    color: #969ca1;
-}
-.Menu_nav a{
-    color: azure;
-}
-.Menu_nav a:hover{
-    color: #a0b966;
-}
-.Menu-list_nav{
-    list-style-type: none;
-    display: flex;
-    justify-content: space-between;
-    margin-right: 1em;
-}
-
-.Menu-item_nav{
-    text-decoration: none;
-    list-style: none;
-    padding: 0 1em;
-}
-
-.Brand_nav{
-    margin-left: 1em;
-    font-weight: 700;
-    color: red;
+.navbar .dropdown-menu .form-control {
+    width: 200px;
 }

@@ -6,64 +6,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Tu Manga{% endblock title %}</title>
+    <!-- css files -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    {% block static_files %}{% endblock static_files %}
     {% block css %}{% endblock css %}
+    <!-- script -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {% block static_files %}{% endblock static_files %}
   </head>
   <body>
-    <section class="container">
       <header>
-        <nav class="Menu_nav">
-          <a class="Brand_nav" href="{% url "home" %}">
-            <p>Manga</p>
-          </a>
-          <ul class="Menu-list_nav">
-            <li class="Menu-item_nav">
-              <form method="get" action="{% url 'manageManga:list_of_mangas' %}">
-                <span>
-                  <input type="text" name="search" maxlength="100" placeholder="Buscar" id="id_slug">
-                </span>
-                <span>
-                  <button type="submit"><b>Search</b></button>
-                </span>
-              </form>
-            </li>
-            {% if user.is_authenticated %}
-            <li class="Menu-item_nav" id="username">
-              {{ user.username }}
-            </li>
-            <li class="Menu-item_nav">
-              <a href="{% url "manageManga:manga_add" %}">New Manga</a>
-            </li>
-            <li class="Menu-item">
-              <a href="{% url "accounts:logout" %}?next={{request.path}}">Log out</a>
-            </li>
-            {% else %}
-            <li class="Menu-item_nav">
-              <a href="{% url "accounts:singup" %}?next={{request.path}}">Sign Up</a>
-            </li>
-            <li class="Menu-item_nav">
-              <a href="{% url "accounts:login" %}?next={{request.path}}">Log in</a>
-            </li>
-            {% endif %}
-          </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation">
+          <div class="container">
+            <a class="navbar-brand  mb-0 h1" href="{% url "home" %}"> Manga<span class="sr-only">(current)</span></a>
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar"  aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="exCollapsingNavbar">
+              <ul class="nav navbar-nav">
+                <li class="nav-item"><a href="#" class="nav-link">Manga List</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url "manageManga:manga_add" %}">New Manga</a>
+                </li>
+                {% endif %}
+                <!-- <li class="nav-item"><a href="#" class="nav-link">More</a></li> -->
+              </ul>
+              <ul class="nav navbar-nav flex-sm-column flex-md-row justify-content-md-between ml-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item ">
+                  <span class="navbar-text">{{ user.username }}</span>
+                </li>
+                <li class="nav-item mr-2">
+                    <a class="nav-link" href="{% url "accounts:logout" %}?next={{request.path}}">Log out</a>
+                  </li>
+                {% else %}
+                {% endif %}
+                  <form class="form-inline" method="get" action="{% url 'manageManga:list_of_mangas' %}">
+                    <div class="input-group">
+                      <input type="search" class="form-control form-control-sm" maxlength="100" placeholder="Search" name="search" id="id_search" aria-label="Search">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
+                      </div>
+                    </div>
+                  </form>
+                <li class="nav-item "><a href="#" class="nav-link" title="settings"><i class="fa fa-cog fa-fw fa-lg"></i></a></li>
+                {% if user.is_authenticated %}
+
+                {% else %}
+                <li class="dropdown">
+                  <button type="button" id="dropdownMenu1" data-toggle="dropdown" class="btn btn-sm btn-outline-secondary dropdown-toggle">Sign In / Register <span class="caret"></span></button>
+                  <ul class="dropdown-menu dropdown-menu-right mt-1">
+                    <li class="p-3">
+                      <form class="form" role="form" method="post" action="{% url "accounts:login" %}?next={{request.path}}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="id_username">Username:</label>
+                          <input type="text" class="form-control form-control-sm" name="username" required autofocus id="id_username" maxlength="254" placeholder="Enter your user name">
+                        </div>
+                        <div class="form-group m-0">
+                          <label for="id_password">Password:</label>
+                          <input type="password" class="form-control form-control-sm" name="password" required id="id_password" placeholder="Password">
+                        </div>
+                        <div class="form-group text-xs-center">
+                          <small><a class="disable" href="#">Forgot password?</a></small>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                        </div>
+                        <div class="form-group text-xs-center m-0">
+                          <small><a href="{% url 'accounts:singup' %}">Register.</a></small>
+                        </div>
+                      </form>
+                    </li>
+                  </ul>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
         </nav>
         {% block header %}{% endblock header %}
       </header>
-  
-      <main>
-        {% block content %}{% endblock content %}
-      </main>
-  
+      <div class="container">
+        <main>
+          {% block content %}{% endblock content %}
+        </main>
+      </div>
+
       <footer>
         {% block footer %}{% endblock footer %}
       </footer>
-  
+
       <script src="{% static 'js/app.js' %}"></script>
-  
       {% block javascript %}{% endblock javascript %}
-    </section>
   </body>
 </html>
