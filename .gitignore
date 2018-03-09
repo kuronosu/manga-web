@@ -7,3 +7,4 @@ media/*
 *.log
 *.pot
 local_settings.py
+local_urls.py

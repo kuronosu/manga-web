@@ -5,96 +5,114 @@
 
 {% block static_files %}
   <link rel="stylesheet" href="{% static 'css/manga_list.css' %}">
-  <script src="{% static 'js/manga_forms.js' %}"></script>
+  {% comment %} <script src="{% static 'js/manga_forms.js' %}"></script> {% endcomment %}
 {% endblock static_files %}
 
 {% block content %}
 
 <div>
-  <div class="search">
-  </div>
-
-  <form id='menu' class="filter_form" method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">
-    <ul>
-      <li>
-        {{ filter_form.state.label_tag }}
-        {{ filter_form.state }}
-      </li>
-      <li>
-        <a href='#'> {{ filter_form.genres.label }} >>> </a>
-        <ul id="submenu">
-          {% for st in filter_form.genres %}
-          <li>{{ st }}</li>
-          {% endfor %}
-        </ul>
-      </li>
-      <li>
-        <a href='#'> {{ filter_form.order.label }} >>> </a>
-        {% comment %} {{ filter_form.order }} {% endcomment %}
-        <ul id="submenu">
-          {% for st in filter_form.order %}
-          <li>{{ st }}</li>
-          {% endfor %}
-        </ul>
-      </li>
-      <li>
-        <button type="submit">Filter</button>
-      </li>
-    </ul>
-  </form>
+	<form id='menu' class="filter_form form-inline m-3" method="get" action="{% url 'manageManga:list_of_mangas' %}" name="filter_form">	
+		<div class="form-group ml-2">
+			<div class="input-group input-group-sm">
+				<div class="input-group-prepend">
+					<label class="input-group-text" for="id_state" id="label-state">Estado:</label>
+				</div>
+				<select name="state" class="custom-select" id="id_state">
+					<option value=""  {% ifequal filter_form.state.data "" %} selected {% endifequal %} >---------</option>
+					<option value="1" {% ifequal filter_form.state.data "1" %} selected {% endifequal %} >Emision</option>
+					<option value="2" {% ifequal filter_form.state.data "2" %} selected {% endifequal %} >Finalizado</option>
+					<option value="3" {% ifequal filter_form.state.data "3" %} selected {% endifequal %} >Pausado</option>
+					<option value="4" {% ifequal filter_form.state.data "4" %} selected {% endifequal %} >Cancelado</option>
+				</select>
+				{% comment %} {{ filter_form.state }} {% endcomment %}
+			</div>
+		</div>
+		
+		<div class="form-group ml-2">
+			<div class="dropdown">
+				<button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuGenres" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{{filter_form.genres.label}}
+				</button>
+				<div class="dropdown-menu" id="genre_menu" aria-labelledby="dropdownMenuGenres">
+					{% for i in filter_form.genres %}
+					<div class="form-check pl-1">
+							<input class="form-check-input" type="checkbox" name="genres" value="{{i.data.value}}" id="id_genres_{{i.data.index}}" {% ifequal i.data.selected True %} checked="checked" {% endifequal %}>
+							<label class="form-check-label" for="id_genres_{{i.data.index}}">
+								{{i.data.label}}
+							</label>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<div class="form-group ml-2">
+			<div class="dropdown">
+				<button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{{filter_form.order.label}}
+				</button>
+				<div class="dropdown-menu" id="genre_menu" aria-labelledby="dropdownMenuOrder">
+					{% for i in filter_form.order %}
+					<div class="form-check pl-1">
+						<input class="form-check-input" type="radio" name="order" value="{{i.data.value}}" id="id_order_{{i.data.index}}" {% ifequal i.data.attrs.checked True %} checked {% endifequal %}>
+						<label class="form-check-label" for="id_order_{{i.data.index}}">
+							{{i.data.label}}
+						</label>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<div class="form-group ml-2">
+			<button type="submit" class="btn btn-dark">Filter</button>
+		</div>
+	</form>
 </div>
 
-<section>
-  <ul class="Mangas">
-{% for mng in mangas_list %}
-    <li>
-    <article class="Manga-container">
-      <figure class="Manga-item">
-        <a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">
-          <img class="Manga-image" src="{{ mng.image.url }}" alt="{{ mng.title }}">
-        </a>
-        <figcaption class="Manga-title">
-          {{ mng.title }}
-        </figcaption>
-      </figure>
-    </article>
-  </li>
-  {% endfor %}
-  </ul>
+<section class="mangas">
+	{% for mng in mangas_list %}
+	<div class="card m-2" style="max-width:180px;">
+		<div>
+			<a href="{% url 'manageManga:manga_detail' slug=mng.slug %}">
+				<img class="card-img-top img-fluid" style="max-height:260px" src="{{ mng.image.url }}" alt="{{ mng.title }}">
+			</a>
+		</div>
+		<div class="p-2 card-body">
+			<figcaption class="figure-caption"> <span class="card-title"> {{ mng.title }} </span></figcaption>
+		</div>
+	</div>
+	{% endfor %}
 </section>
 
 {% if page_obj.has_previous %}
-  {% if page_obj.previous_page_number == 1 %}
+{% if page_obj.previous_page_number == 1 %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.previous_page_number }}
 </a>
-  {% else %}
+{% else %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page=1{{ args_get }}">
 Primera
 </a>
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.previous_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.previous_page_number }}
 </a>
-  {% endif %}
+{% endif %}
 {% endif %}
 
 <br><span>{{ page_obj.number }}</span><br>
 
 {% if page_obj.has_next %}
-  {% if page_obj.next_page_number == page_obj.paginator.num_pages %}
+{% if page_obj.next_page_number == page_obj.paginator.num_pages %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.next_page_number }}
 </a>
-  {% else %}
+{% else %}
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.next_page_number }}{{ args_get }}">
 Ir a página {{ page_obj.next_page_number }}
 </a>
 <a href="{% url 'manageManga:list_of_mangas' %}?page={{ page_obj.paginator.num_pages }}{{ args_get }}">
 Ultima
 </a>
-  {% endif %}
-
 {% endif %}
-
+{% endif %}
 
 {% endblock content %}

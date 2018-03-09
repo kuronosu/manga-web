@@ -4,3 +4,26 @@ button:focus {
 .navbar .dropdown-menu .form-control {
     width: 200px;
 }
+#genre_menu{
+    max-width: 300px !important;
+    max-height: 400px;
+    overflow-y: auto;
+}
+#genre_menu .form-check-label{
+    line-height: 20px;
+}
+#genre_menu .form-check{
+    justify-content: start;
+}
+.fa-search:before {
+    content: "\f002";
+    font-family: 'FontAwesome';
+}
+.my-round-left{
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+.my-round-right{
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}

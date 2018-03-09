@@ -60,7 +60,7 @@ class MangaListAndFilterView(FilterMixin, ListView):
     model = Manga
     template_name = 'manageManga/manga_list.html'
     context_object_name = 'mangas_list'
-    paginate_by = 5
+    paginate_by = 30
     form_classes = {
         'filter_form': FilterForm,
         'search_form': SearchForm

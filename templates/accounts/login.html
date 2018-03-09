@@ -11,8 +11,8 @@
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_username">Username</label>
-            <input type="text" name="username" class="form-control" id="id_username" autofocus required aria-describedby="usernameHelp" autofocus maxlength="254" placeholder="Enter username">
+            {{form.username.label_tag}}
+            <input type="text" name="username" class="form-control" id="id_username" placeholder="Enter your username" maxlength="254" autofocus required>
             {% if form.username.errors %}
             {% for error in form.username.errors %}
             <small id="usernameError" class="form-text text-muted">{{ error }}</small>
@@ -20,7 +20,7 @@
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_password">Password</label>
+            {{form.password.label_tag}}
             <input type="password" name="password" required class="form-control" id="id_password" placeholder="Password">
             {% if form.password.errors %}
             {% for error in form.username.errors %}

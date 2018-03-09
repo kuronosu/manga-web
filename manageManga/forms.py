@@ -40,12 +40,9 @@ class FilterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FilterForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs = {
-                'class': 'form_control',
-            }
-        self.fields['state'].required = False
         self.fields['order'] = forms.ChoiceField(choices=self.CHOICES, widget=forms.RadioSelect())
+        self.fields['state'].widget.attrs['class'] = " custom-select"
+        self.fields['state'].required = False
         self.fields['order'].required = False
 
     def clean(self):
