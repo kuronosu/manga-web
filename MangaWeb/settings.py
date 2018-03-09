@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
     SECRET_KEY = os.environ['SECRET_KEY']
 except Exception:
-    # Poner la SECRET_KEY en el arcuvi de configuracion local
+    # Poner la SECRET_KEY en el archivo de configuracion local o en el entorno virtual
     pass
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -150,5 +150,10 @@ MEDIA_URL = '/media/'
 
 try:
    from MangaWeb.local_settings import *
+except Exception as e:
+    pass
+
+try:
+   from MangaWeb.deploy_settings import *
 except Exception as e:
     pass
