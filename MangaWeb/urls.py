@@ -18,10 +18,15 @@ from django.conf import settings
 from django.urls import path, include
 from manageManga.views import HomeView
 
-from .local_urls import LOCAL_URLS
 
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     path('manga/', include('manageManga.urls', namespace='manageManga')),
     path('accounts/', include('accounts.urls', namespace='accounts'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + LOCAL_URLS
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+try:
+    from .local_urls import LOCAL_URLS
+    urlpatterns  += LOCAL_URLS
+except Exception:
+    pass
