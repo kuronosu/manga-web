@@ -18,7 +18,10 @@ from django.conf import settings
 from django.urls import path, include
 from manageManga.views import HomeView
 
-from .local_urls import LOCAL_URLS
+try:
+    from .local_urls import LOCAL_URLS
+except Exception:
+    pass
 
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
