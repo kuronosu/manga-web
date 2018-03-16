@@ -16,9 +16,7 @@ $(function(){
       csrfmiddlewaretoken: $('#votes input:hidden').val(),
       vote_value: parseInt($(i.originalEvent.toElement).text())
     }
-    if (!$('#username')[0]){
-      alert("Necesita iniciar sesión para votar.")
-    } else {
+
       $.ajax({
         type: "POST",
         url: $('#votes').attr('action-url') ,
@@ -31,10 +29,11 @@ $(function(){
             voto_anterior.removeClass('vote_selected')
             $('#vote_' + data.vote_value).addClass('vote_selected')
             $('#puntaje').html(data.puntaje.toFixed(2))
+          } else {
+            alert(data.message)
           }
         }
       })
-    }
   })
   // Funcion para hacer un request con ajax para obtener los capitulos de un tomo
   function tomos_ajax(url, result_cont){

@@ -143,7 +143,7 @@ class MangaDeleteView(LoginRequiredMixin, UserPermissionsMixin, DeleteView):
 #Vistas de los votos#
 #####################
 
-class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
+class VoteView(ModelFormMixin, ProcessFormView):
     """ Vista para manejar los votos de un manga """
     model = Voto
     form_class = VoteMangaForm
@@ -164,7 +164,7 @@ class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
         return super(VoteView, self).post(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse('Invalid Method')
+        return Http404('Invalid Method')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -180,7 +180,16 @@ class VoteView(LoginRequiredMixin, ModelFormMixin, ProcessFormView):
             })
 
     def form_invalid(self, form):
-        return JsonResponse({'state': False})
+        return JsonResponse({'state': False, 'message': _("Errores en el formulario."),})
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            if request.is_ajax():
+                return JsonResponse({
+                'state': False,
+                'message': _("Inicia sesion para poder votar. "),
+                })
+        return super().dispatch(request, *args, **kwargs)
 
 #####################
 #Vistas de los tomos#
