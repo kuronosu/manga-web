@@ -9,24 +9,36 @@
 {% endblock title %}
 
 {% block static_files %}
-<script src="{% static 'js/ajax_chapter.js' %}"></script>
 <style>
     #pageImage img{ 
         width: 400px;
         border: 1px solid #484848;
         margin: 0 auto;
     }
+    p{
+        margin-bottom: 0.2rem;
+    }
 </style>
 {% endblock static_files %}
 
 {% block content %}
-<p>{{ chapter.manga }}</p>
-<p>{{ chapter.owner }}</p>
-<p>{{ chapter.user_chapter_number }}</p>
-<p>{{ chapter.name }}</p>
-<button id="previous">Anterior</button>
-<button id="next">Sigiente</button>
+<h3>{{ chapter.manga }}</h3>
+<p>Creador: {{ chapter.author }}</p>
+<p>Numero: {{ chapter.user_chapter_number }}</p>
+{% if chapter.name %}
+<span>Nombre:{{ chapter.name }}</span>
+{% endif %}
+{% if page.number == page.backPage %}
+{% else %}
+<a href="?page={{page.backPage}}">Anterior</a>
+{% endif %}
+{% if page.number == page.nexPage %}
+{% else %}
+<a href="?page={{page.nexPage}}">Sigiente</a>
+{% endif %}
+
 <div id="pageImage">
-    <img src="/media/{{pages.0.image}}" alt="pagina {{pages.0.number}}">
+    <p >pagina {{page.number}}</p>
+    <img src="{{page.image.url}}" alt="pagina {{page.number}}" p-n="{{page.number}}">
 </div>
 {% endblock content %}

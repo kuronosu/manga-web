@@ -424,10 +424,41 @@ class ChapterDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(ChapterDetailView, self).get_context_data(**kwargs)
+        query = filter_obj_model(Page, chapter=self.object)
         if 'pages' not in context:
-            pages = filter_obj_model(Page, chapter=self.object)
+            pages = query
             context['pages'] = pages
+        if 'page' not in context:
+            number_page = self.get_page(self.request)
+            len_query = len(query)
+            try:
+                if len_query > 0 and number_page <= len_query:
+                    page = query.get(number = number_page)
+                else:
+                    page = query.get(number = 1)
+            except Exception as e:
+                raise Http404()
+
+            if page.number == len(query):
+                page.nexPage = page.number
+            else:
+                page.nexPage = page.number + 1
+            if page.number == 1:
+                page.backPage = page.number
+            else:
+                page.backPage = page.number -1
+            context['page'] =  page
         return context
+    
+    def get_page(self, request):
+        try:
+            if ( request.GET.get("page") is not None) and (int(request.GET.get("page")) >= 1):
+                page = int(request.GET.get("page"))
+            else:
+                page = 1
+        except Exception as e:
+            page = 1
+        return page
 
 class ChapterUpdateView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, UpdateView):
     """Vista de para crear un capiCreatetulo de un manga"""

@@ -19,7 +19,7 @@ main{
     display: flex;
 }
 #detalles{
-    max-width: 30%;
+    max-width: 20%;
 }
 p{
     word-wrap: break-word;
