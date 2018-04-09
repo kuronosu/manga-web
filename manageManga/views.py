@@ -612,7 +612,7 @@ def create(request):
     from .models import Genre, State
 
     query = filter_obj_model(Genre)
-    query = filter_obj_model(State)
+    query2 = filter_obj_model(State)
     if len(query) > 0 and len(query2) > 0:
         raise Http404
 
