@@ -29,7 +29,7 @@ except Exception:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['read-manga.herokuapp.com']
 
 
 # Application definition
