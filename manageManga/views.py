@@ -604,3 +604,32 @@ def ajax(request):
     else:
         print("Not Ajax")
         return render(request, "test.html")
+
+
+
+
+def create(request):
+    from .models import Genre, State
+
+    query = filter_obj_model(Genre)
+    query = filter_obj_model(State)
+    if len(query) > 0 && len(query2) > 0:
+        raise Http404
+
+    from django import forms
+    class GenreForm(forms.ModelForm):
+        class Meta:
+            model = Genre
+            fields = ['genre']
+    class StateForm(forms.ModelForm):
+        class Meta:
+            model = State
+            fields = ['state']
+
+    for i in Genre.GENRE_CHOICES:
+        genero = GenreForm({'genre':i[0]})
+        genero.save()
+    for i in State.STATE_CHOICES:
+        state = StateForm({'state':i[0]})
+        state.save()
+    return HttpResponse("Completado.")
