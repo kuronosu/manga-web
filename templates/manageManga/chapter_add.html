@@ -4,8 +4,9 @@
 
 {% block static_files %}
 <script src="{% static 'js/chapterAddAjax.js' %}"></script>
-<script src="http://hayageek.github.io/jQuery-Upload-File/4.0.11/jquery.uploadfile.min.js"></script>
-<link href="http://hayageek.github.io/jQuery-Upload-File/4.0.11/uploadfile.css" rel="stylesheet">
+<script src="{% static 'js/upload.min.js' %}"></script>
+<link href="{% static 'css/upload.css' %}" rel="stylesheet">
+<script src=""></script>
 {% endblock static_files %}
 
 {% block content %}
