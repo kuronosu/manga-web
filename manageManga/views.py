@@ -613,11 +613,7 @@ def create(request):
 
     query = filter_obj_model(Genre)
     query = filter_obj_model(State)
-<<<<<<< HEAD
     if len(query) > 0 and len(query2) > 0:
-=======
-    if len(query) > 0 && len(query2) > 0:
->>>>>>> 6ec493eb1664bc6d5ea9c12ca75d2bc810eba3ef
         raise Http404
 
     from django import forms
