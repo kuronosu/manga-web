@@ -29,8 +29,11 @@ except Exception:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['read-manga.herokuapp.com']
-
+ALLOWED_HOSTS = []
+try:
+    ALLOWED_HOSTS.append(os.environ['HOST'])
+except Exception:
+    print("Porfavor crear la varialbe de entorno HOST")
 
 # Application definition
 

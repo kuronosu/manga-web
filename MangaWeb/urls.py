@@ -16,14 +16,13 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path, include
-from manageManga.views import HomeView, create
+from manageManga.views import HomeView
 
 
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     path('manga/', include('manageManga.urls', namespace='manageManga')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('create/', create, name="crearGenres&States")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 try:
