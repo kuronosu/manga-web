@@ -20,16 +20,16 @@ def recurse(page, xObject, abspath):
             else:
                 mode = "P"
             imagenamepath = "%s_page_%s"%(abspath[:-4], page)
-            if xObject[obj]['/Filter'][0] == '/FlateDecode':
+            if xObject[obj]['/Filter'][0] == '/FlateDecode' or xObject[obj]['/Filter'] == '/FlateDecode':
                 img = Image.frombytes(mode, size, data)
                 formato = ".png"
                 img.save(imagenamepath + formato)
-            elif xObject[obj]['/Filter'][0] == '/DCTDecode':
+            elif xObject[obj]['/Filter'][0] == '/DCTDecode' or xObject[obj]['/Filter'] == '/DCTDecode':
                 formato = ".jpg"
                 img = open(imagenamepath + formato, "wb")
                 img.write(data)
                 img.close()
-            elif xObject[obj]['/Filter'][0] == '/JPXDecode':
+            elif xObject[obj]['/Filter'][0] == '/JPXDecode' or xObject[obj]['/Filter'] == '/JPXDecode':
                 formato = ".jp2"
                 img = open(imagenamepath + formato, "wb")
                 img.write(data)

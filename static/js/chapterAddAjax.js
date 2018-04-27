@@ -37,7 +37,7 @@ $(function() {
             let html = "<div><label for='id_user_chapter_number'>Chapter number:</label><input type='number' name='user_chapter_number' required id='id_user_chapter_number'></div>"
             html += "</br>"
             html += "<div><label for='id_name'>Name:</label><input type='text' name='name' maxlength='100' id='id_name'></div>"
-            return html;            
+            return html
         }
     })
     $("#chapterAddForm").submit(function(e){
