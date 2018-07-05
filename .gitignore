@@ -9,3 +9,4 @@ media/*
 local_settings.py
 local_urls.py
 deploy_settings.py
+environment_variables.py

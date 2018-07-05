@@ -16,6 +16,10 @@ from django.urls import reverse_lazy
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+try:
+   from MangaWeb.environment_variables import *
+except:
+    print('Crear variables de entorno')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -166,10 +170,11 @@ MEDIA_URL = '/media/'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'andresfelipe.2031@gmail.com'
-EMAIL_HOST_PASSWORD = 'khoslgpdibzacdnv'
+EMAIL_PORT = int(os.environ['EMAIL_PORT'])
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 
 try:
