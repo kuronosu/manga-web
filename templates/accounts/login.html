@@ -13,7 +13,7 @@
         {% csrf_token %}
         <div class="form-group">
             {{form.username.label_tag}}
-            <input type="text" name="username" class="form-control" id="id_username" placeholder="Enter your username" maxlength="254" autofocus required>
+            <input type="text" name="username" class="form-control" id="id_username" placeholder="{{form.username_placeholder}}" maxlength="254" autofocus required>
             {% if form.username.errors %}
             {% for error in form.username.errors %}
             <small id="usernameError" class="form-text text-muted">{{ error }}</small>

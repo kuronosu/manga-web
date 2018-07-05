@@ -81,6 +81,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MangaWeb.wsgi.application'
+AUTHENTICATION_BACKENDS = ['django-dual-authentication.backends.DualAuthentication']
 
 
 # Database
@@ -95,9 +96,9 @@ WSGI_APPLICATION = 'MangaWeb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mangaweb',
-        'USER': 'mangawebdatabaseadmin',
-        'PASSWORD': 'KMPWD',
+        'NAME': os.environ['DBNAME'],
+        'USER': os.environ['DBUSER'],
+        'PASSWORD': os.environ['DBPASS'] ,
         'HOST': 'localhost',
         'PORT': '',                      # Set to empty string for default.
     }
@@ -176,6 +177,8 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 LOGIN_REDIRECT_URL = reverse_lazy('home')
+AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_CASE_SENSITIVE = 'both'
 
 try:
    from MangaWeb.local_settings import *

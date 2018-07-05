@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.utils.text import capfirst
 from django.contrib.auth.views import (
     PasswordResetView,
     PasswordResetDoneView,
@@ -10,7 +11,7 @@ from django.contrib.auth.views import (
     LogoutView
     )
 
-from .forms import SignUpForm
+from .forms import SignUpForm, AuthenticationForm
 
 class RedirectAuthenticatedUser:
     def dispatch(self, request, *args, **kwargs):
@@ -43,6 +44,7 @@ class SingUpView(RedirectAuthenticatedUser, CreateView):
 class MyLoginView(LoginView):
     template_name = 'accounts/login.html'
     redirect_authenticated_user = True
+    form_class = AuthenticationForm
 
 class MyLogoutView(LogoutView):
     next_page = '/'
