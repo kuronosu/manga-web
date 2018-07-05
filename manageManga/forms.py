@@ -178,8 +178,8 @@ class ChapterRegistrationForm(forms.ModelForm):
         content = self.cleaned_data.get('content')
         content_file_name = str(content)
         split_str = content_file_name.split('.')
-        tipo = split_str[(len(split_str)-1)]
-        if tipo != 'pdf':
+        tipo = split_str[-1]
+        if tipo.lower() != 'pdf':
             self.add_error('content', _('Por favor suba un archivo pdf.'))
         return super(ChapterRegistrationForm, self).clean()
     
