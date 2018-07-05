@@ -34,6 +34,7 @@
         <small id="error" class="form-text text-muted">{{ error }}</small>
         {% endfor %}
         {% endif %}
+        <small><a class="btn btn-sm" href="{% url "accounts:password_reset" %}" aria-disabled="true">Forgot password?</a></small>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Log In</button>
         </div>

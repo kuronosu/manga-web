@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,10 +31,6 @@ except Exception:
 DEBUG = False
 
 ALLOWED_HOSTS = []
-try:
-    ALLOWED_HOSTS.append(os.environ['HOST'])
-except Exception:
-    print("Porfavor crear la varialbe de entorno HOST")
 
 # Application definition
 
@@ -85,10 +82,20 @@ WSGI_APPLICATION = 'MangaWeb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mangaweb',
+        'USER': 'mangawebdatabaseadmin',
+        'PASSWORD': 'KMPWD',
+        'HOST': 'localhost',
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
@@ -140,9 +147,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -151,11 +158,19 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 MEDIA_ROOT = 'media'
 
 MEDIA_URL = '/media/'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'andresfelipe.2031@gmail.com'
+EMAIL_HOST_PASSWORD = 'khoslgpdibzacdnv'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+LOGIN_REDIRECT_URL = reverse_lazy('home')
 
 try:
    from MangaWeb.local_settings import *

@@ -20,7 +20,7 @@
     </head>
     <body>
         <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2" role="navigation">
                 <div class="container">
                     <a class="navbar-brand  mb-0 h1" href="{% url "home" %}"> Manga<span class="sr-only">(current)</span></a>
                     <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar"  aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@
                                                 <input type="password" class="form-control form-control-sm" name="password" required id="id_password_nav" placeholder="Password">
                                             </div>
                                             <div class="form-group text-xs-center">
-                                                <small><a class="btn btn-sm disabled" href="#" aria-disabled="true">Forgot password?</a></small>
+                                                <small><a class="btn btn-sm" href="{% url "accounts:password_reset" %}" aria-disabled="true">Forgot password?</a></small>
                                             </div>
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary btn-block">Sign In</button>
