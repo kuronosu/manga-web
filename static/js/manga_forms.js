@@ -8,7 +8,7 @@ $(function() {
             submenu.fadeToggle().css('display', 'block')
         })
     })
-    let checkboxs = $('input[type=checkbox]', '.form_control')
+    let checkboxs = $('.form-check-input')
     if (checkboxs.length <= 0) {
         checkboxs = checkboxs.prevObject
     }

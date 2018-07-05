@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+from django.utils.safestring import mark_safe
 from .models import Manga, Chapter, Voto, Tomo, Page
 from .funct import filter_obj_model
 # from django.utils.translation import ugettext, ugettext_noop
@@ -72,6 +73,25 @@ class SearchForm(forms.ModelForm):
 # Formularios de los mangas #
 #############################
 
+class RenderUpdateImage:
+    def render_image(self):
+        template = """
+        <div class="mb-3">
+            <p>{current}</p>
+            <img class="current-image" src="/media/{url}" alt="{alt}">
+        </div>
+        <div class="custom-file">
+            <input type="file" name="image" class="custom-file-input" id="id_image">
+            <label class="custom-file-label" for="id_image">{label}</label>
+        </div>
+        """.format(
+            url = self.initial['image'],
+            alt = _("Image of ") + self.initial['title'],
+            current = _("Current image: "),
+            label = _("New image")
+        )
+        return mark_safe(template)
+
 class MangaRegistrationForm(forms.ModelForm):
     """Formulario para la creacion de mangas"""
     MAXGENRES = 7
@@ -86,10 +106,11 @@ class MangaRegistrationForm(forms.ModelForm):
         super(MangaRegistrationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {
-                'class': 'form_control',
+                'class': 'form-control',
             }
         self.fields['title'].widget.attrs['placeholder'] = _('Titulo del manga')
         self.fields['description'].widget.attrs['placeholder'] = _('Description of manga')
+        self.fields['state'].widget.attrs['class'] = 'custom-select'
 
     def clean(self):
         genres = self.cleaned_data.get('genres')
@@ -104,20 +125,20 @@ class MangaRegistrationForm(forms.ModelForm):
 
         return super(MangaRegistrationForm, self).clean()
 
-class MangaEditForm(forms.ModelForm):
+class MangaEditForm(forms.ModelForm, RenderUpdateImage):
     """Formulario para editar mangas"""
 
     class Meta:
         """Meta clase"""
         model = Manga
-        fields = ['description', 'state', 'genres']
+        fields = ['title', 'description', 'state', 'genres', 'image']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
 
     def __init__(self, *args, **kwargs):
         super(MangaEditForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {
-                'class': 'form_control',
+                'class': 'form-control',
             }
         self.fields['description'].widget.attrs['placeholder'] = _('Description of manga')
 
@@ -131,13 +152,14 @@ class MangaEditForm(forms.ModelForm):
                 self.add_error('genres', _('Select maximum {} geners'.format(max_genres)))
         return super(MangaEditForm, self).clean()
 
-class StaffMangaEditForm(MangaEditForm):
+class StaffMangaEditForm(MangaEditForm, RenderUpdateImage):
     """ MangaEditForm para el sstaff """
     class Meta:
         """Meta clase"""
         model = Manga
         fields = ['title', 'description', 'state', 'genres', 'image', 'verify']
         widgets = {'genres': forms.CheckboxSelectMultiple()}
+    
 
 class VoteMangaForm(forms.ModelForm):
     class Meta:

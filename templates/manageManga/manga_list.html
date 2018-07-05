@@ -5,7 +5,7 @@
 
 {% block static_files %}
   <link rel="stylesheet" href="{% static 'css/manga_list.css' %}">
-  {% comment %} <script src="{% static 'js/manga_forms.js' %}"></script> {% endcomment %}
+  <script src="{% static 'js/manga_forms.js' %}"></script>
 {% endblock static_files %}
 
 {% block content %}
@@ -17,14 +17,7 @@
 				<div class="input-group-prepend">
 					<label class="input-group-text" for="id_state" id="label-state">Estado:</label>
 				</div>
-				<select name="state" class="custom-select" id="id_state">
-					<option value=""  {% ifequal filter_form.state.data "" %} selected {% endifequal %} >---------</option>
-					<option value="1" {% ifequal filter_form.state.data "1" %} selected {% endifequal %} >Emision</option>
-					<option value="2" {% ifequal filter_form.state.data "2" %} selected {% endifequal %} >Finalizado</option>
-					<option value="3" {% ifequal filter_form.state.data "3" %} selected {% endifequal %} >Pausado</option>
-					<option value="4" {% ifequal filter_form.state.data "4" %} selected {% endifequal %} >Cancelado</option>
-				</select>
-				{% comment %} {{ filter_form.state }} {% endcomment %}
+				{{ filter_form.state }}
 			</div>
 		</div>
 		

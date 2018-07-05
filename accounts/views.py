@@ -1,4 +1,3 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
@@ -11,16 +10,18 @@ from django.contrib.auth.views import (
     LogoutView
     )
 
+from .forms import SignUpForm
+
 class RedirectAuthenticatedUser:
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
             return HttpResponseRedirect('/')
-        return super(MyPasswordResetView, self).dispatch(request, *args, **kwargs)
+        return super(RedirectAuthenticatedUser, self).dispatch(request, *args, **kwargs)
 
 class SingUpView(RedirectAuthenticatedUser, CreateView):
     """SingUp View"""
     template_name = 'accounts/singup.html'
-    form_class = UserCreationForm
+    form_class = SignUpForm
     success_url = reverse_lazy('manageManga:list_of_mangas')
 
     def form_valid(self, form):
