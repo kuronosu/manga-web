@@ -1,8 +1,8 @@
 """ Funciones de uso general """
 
-def frontend_permission(obj):
+def frontend_permission(view):
     """ Verifica permisos para mostrar o no en el html contenido de staff o author """
-    return obj.object.author.id == obj.request.user.id or obj.request.user.is_staff
+    return view.object.author.id == view.request.user.id or view.request.user.is_staff
 
 def filter_obj_model(model, **query_kwargs):
     """ Funcion que filtra objetos de un modelo """

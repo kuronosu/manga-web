@@ -1,5 +1,6 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.utils.text import capfirst
@@ -12,6 +13,8 @@ from django.contrib.auth.views import (
     )
 
 from .forms import SignUpForm, AuthenticationForm
+
+User = get_user_model()
 
 class RedirectAuthenticatedUser:
     def dispatch(self, request, *args, **kwargs):
@@ -61,3 +64,13 @@ class MyPasswordResetConfirmView(RedirectAuthenticatedUser, PasswordResetConfirm
     template_name = 'accounts/password_reset_confirm.html'
     success_url = reverse_lazy('accounts:login')
     post_reset_login = True
+
+
+class UserDetailview(DetailView):
+    model = User
+    template_name = 'accounts/profile.html'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    context_object_name = 'userObject'
+
+    # def get_context_object_name

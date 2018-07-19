@@ -38,7 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars')#, null=True, blank=True)
+    # image = models.ImageField(upload_to='avatars')
 
     objects = UserManager()
 
@@ -48,9 +49,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 
-    class Meta:
+    class Meta(AbstractBaseUser.Meta):
         verbose_name = _('user')
         verbose_name_plural = _('users')
+        swappable = 'AUTH_USER_MODEL'
 
     def get_full_name(self):
         """Returns the first_name plus the last_name, with a space in between."""

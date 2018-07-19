@@ -2,11 +2,12 @@ from django.contrib.auth.views import logout
 from django.urls import path
 from django.urls import reverse_lazy
 
-from .views import SingUpView, MyLoginView, MyPasswordResetView, MyPasswordResetDoneView, MyPasswordResetConfirmView
+from .views import *
 
 app_name = 'accounts'
 
 urlpatterns = [
+    path('@<str:username>', UserDetailview.as_view() , name = 'login'),
     path('login', MyLoginView.as_view(), name = 'login'),
     path('logout', logout, {'next_page': '/'}, name = 'logout'),
     path('singup', SingUpView.as_view(), name='singup'),
