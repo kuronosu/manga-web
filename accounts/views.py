@@ -18,9 +18,10 @@ User = get_user_model()
 
 class RedirectAuthenticatedUser:
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            return HttpResponseRedirect('/')
-        return super(RedirectAuthenticatedUser, self).dispatch(request, *args, **kwargs)
+        if hasattr(self, 'request'):
+            if self.request.user.is_authenticated: # pylint: disable=E1101
+                return HttpResponseRedirect('/')
+        return super(RedirectAuthenticatedUser, self).dispatch(request, *args, **kwargs) # pylint: disable=E1101
 
 class SingUpView(RedirectAuthenticatedUser, CreateView):
     """SingUp View"""
@@ -49,9 +50,6 @@ class MyLoginView(LoginView):
     redirect_authenticated_user = True
     form_class = AuthenticationForm
 
-class MyLogoutView(LogoutView):
-    next_page = '/'
-
 class MyPasswordResetView(RedirectAuthenticatedUser, PasswordResetView):
     email_template_name = 'accounts/password_reset_email.html'
     template_name = 'accounts/password_reset_form.html'
@@ -66,7 +64,7 @@ class MyPasswordResetConfirmView(RedirectAuthenticatedUser, PasswordResetConfirm
     post_reset_login = True
 
 
-class UserDetailview(DetailView):
+class ProfileView(DetailView):
     model = User
     template_name = 'accounts/profile.html'
     slug_field = 'username'

@@ -82,7 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MangaWeb.wsgi.application'
-AUTHENTICATION_BACKENDS = ['django-dual-authentication.backends.DualAuthentication']
+AUTHENTICATION_BACKENDS = ['accounts.backends.DualAuthenticationBackend']
 
 
 # Database

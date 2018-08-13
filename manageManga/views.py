@@ -21,7 +21,7 @@ import os
 
 from .models import Manga, Chapter, Voto, Tomo, Page
 from .funct import filter_obj_model, frontend_permission
-from .pdfManager import extract_page
+from .pdfManager import convertPdf
 from .mixins import (
     FilterMixin,
     StaffFormsMixin,
@@ -354,36 +354,34 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         form.instance.tomo = tomo
         form.instance.author = self.request.user
         form.instance.content.name = defaultfilters.slugify(form.instance.content.name)
-        self.object = form.save()
-        created_pages = extract_page(self.object.content.name)
-        def back_changes(instance, form):
-            instance.object.delete()
+        self.object = form.save() 
+        try:
+            created_pages = convertPdf(self.object.content.name)
+        except:
+            created_pages = []
+        if len(created_pages) > 0:
+            for i in created_pages:
+                page_form = PageRegistrationForm({'number': i.number})
+                page_form.instance.chapter = self.object
+                page_form.instance.image = i.url
+                page_form.save()
+            if self.request.is_ajax():
+                context = {
+                    'redirect_url': self.object.get_absolute_url(),
+                    'ajax_status': 1
+                }
+                return JsonResponse(context)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            self.object.delete()
             form.add_error('content', _('Error al procesar el archivo'))
-            context = instance.get_context_data()
+            context = self.get_context_data()
             context['form'] = form
-            if instance.request.is_ajax():
+            if self.request.is_ajax():
                 form.errors['ajax_status'] = 0
                 return JsonResponse(form.errors)
-            return instance.render_to_response(context)
+            return self.render_to_response(context)
 
-        if created_pages:
-            try:
-                for i in created_pages:
-                    page_form = PageRegistrationForm({'number': int(i.number)})
-                    page_form.instance.chapter = self.object
-                    page_form.instance.image = i.path.split('media/')[-1:][0] + i.formato
-                    page_form.save()
-                if self.request.is_ajax():
-                    context = {}
-                    context['redirect_url'] = self.object.get_absolute_url()
-                    context['ajax_status'] = 1
-                    return JsonResponse(context)
-                return HttpResponseRedirect(self.get_success_url())
-            except Exception as e:
-                return back_changes(self, form)
-        else:
-            return back_changes(self, form)
-    
     def post(self, request, *args, **kwargs):
         self.object = None
         return super(ChapterAddView, self).post(request, *args, **kwargs)
@@ -436,7 +434,7 @@ class ChapterDetailView(DetailView):
                     page = query.get(number = number_page)
                 else:
                     page = query.get(number = 1)
-            except Exception as e:
+            except Exception:
                 raise Http404()
 
             if page.number == len(query):
@@ -456,7 +454,7 @@ class ChapterDetailView(DetailView):
                 page = int(request.GET.get("page"))
             else:
                 page = 1
-        except Exception as e:
+        except Exception:
             page = 1
         return page
 

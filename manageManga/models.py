@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 import os
 
-from .funct import filter_obj_model, user_directory_path
+from .funct import filter_obj_model, chapters_directory_path
 
 class Genre(models.Model):
     """
@@ -196,8 +196,8 @@ class Voto(models.Model):
             using=using,
             update_fields=update_fields
             )
-        manga = get_object_or_404(Manga, id=self.manga.id)
-        votos = filter_obj_model(Voto, manga__id=self.manga.id)
+        manga = get_object_or_404(Manga, id=self.manga.id) #pylint: disable=E1101
+        votos = filter_obj_model(Voto, manga__id=self.manga.id) #pylint: disable=E1101
         suma = 0
         for i in votos:
             suma += i.vote_value
@@ -209,7 +209,7 @@ class Voto(models.Model):
         """Retorna la detail ulr hacia el manga referente al voto"""
         return reverse(
             'manageManga:manga_detail',
-            kwargs={'slug': self.manga.slug}
+            kwargs={'slug': self.manga.slug} #pylint: disable=E1101
             )
 
     class Meta:
@@ -230,7 +230,7 @@ class Tomo(models.Model):
         """Retorna la detail ulr para cada objeto de este modelo"""
         return reverse(
             'manageManga:manga_detail',
-            kwargs={'slug': self.manga.slug}
+            kwargs={'slug': self.manga.slug} #pylint: disable=E1101
             )
 
     def __str__(self):
@@ -253,7 +253,7 @@ class Chapter(models.Model):
     tomo = models.ForeignKey(Tomo, verbose_name=_('Tomo'), on_delete=models.CASCADE)
     manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.CASCADE)
-    content = models.FileField(upload_to=user_directory_path, verbose_name=_('PDF field'), help_text=_("Este no se puede modificar luego."))
+    content = models.FileField(upload_to=chapters_directory_path, verbose_name=_('PDF field'), help_text=_("Este no se puede modificar luego."))
     user_chapter_number = models.IntegerField(
         verbose_name=_('Chapter number'),
         validators=[MinValueValidator(1)]
@@ -292,7 +292,7 @@ class Chapter(models.Model):
         """Retorna la detail ulr para cada objeto de este modelo"""
         return reverse(
             'manageManga:chapter_detail',
-            kwargs={'chapter_slug': self.slug, 'manga_slug': self.manga.slug, 'tomo_number': self.tomo}
+            kwargs={'chapter_slug': self.slug, 'manga_slug': self.manga.slug, 'tomo_number': self.tomo} #pylint: disable=E1101
             )
 
     class Meta:
@@ -307,7 +307,7 @@ class Page(models.Model):
         verbose_name=_('Numero de la Página'),
         validators=[MinValueValidator(1)]
         )
-    image = models.ImageField(upload_to=user_directory_path)
+    image = models.ImageField()
 
     def delete(self, *args, **kwargs):
         os.remove(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, self.image.name)))
