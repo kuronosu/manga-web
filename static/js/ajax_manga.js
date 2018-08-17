@@ -11,7 +11,7 @@ $(function(){
   })
   // Ajax para los votos implementado en la pagina de Manga Detail
   $('.vote').click(function(i){
-    let voto_anterior = $('.vote_selected')
+    let voto_anterior = $('.text-warning')
     let data = {
       csrfmiddlewaretoken: $('#votes input:hidden').val(),
       vote_value: parseInt($(i.originalEvent.toElement).text())
@@ -26,9 +26,12 @@ $(function(){
         },
         success: function(data) {
           if (data.state == true){
-            voto_anterior.removeClass('vote_selected')
-            $('#vote_' + data.vote_value).addClass('vote_selected')
-            $('#puntaje').html(data.puntaje.toFixed(2))
+            voto_anterior.addClass('text-dark')
+            voto_anterior.removeClass('text-warning')
+            let star = $($('#vote_' + data.vote_value).children()[0])
+            star.addClass('text-warning')
+            star.removeClass('text-dark')
+            $('#puntaje').html(data.puntaje.toFixed(1))
           } else {
             alert(data.message)
           }
@@ -45,13 +48,13 @@ $(function(){
         alert('Error')
       },
       success: function(data) {
-        let resultado = $('<h4>')
+        let resultado = $('<span>')
         data.chapters.forEach(element => {
+          let tmp = (element.name) ? `: ${element.name}` : ''
           resultado.append($('<a>', {
-            text: 'Capitulo: ' + element.number,
+            text: `Capitulo ${element.number}${tmp}`,
             href: element.url
           }))
-          resultado.append($('<span>').html(' | '+element.name))
           resultado.append($('<br>'))
         })
         let link_add = $('#add_chapter')

@@ -172,7 +172,6 @@ class Manga(models.Model):
 class Voto(models.Model):
     VOTE_CHOICES = (
         (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
-        (6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
     )
     manga = models.ForeignKey(Manga, verbose_name=_('Manga'), on_delete=models.CASCADE)
     author = models.ForeignKey(

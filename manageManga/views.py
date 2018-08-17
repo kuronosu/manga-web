@@ -39,10 +39,8 @@ from .forms import (
     VoteMangaForm,
     TomoCreationForm,
     PageRegistrationForm,
-    ChapterUpdateForm
-    )
+    ChapterUpdateForm,
 # Staff forms
-from .forms import (
     StaffMangaEditForm,
     StaffTomoEditForm
     )
@@ -100,7 +98,7 @@ class MangaDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(MangaDetailView, self).get_context_data(**kwargs)
         if 'form_vote_files' not in context:
-            context['form_vote_files'] = list(range(1, 11))
+            context['form_vote_files'] = list(range(1, 6))
         if 'tomos' not in context:
             tomos = filter_obj_model(Tomo, manga=self.object)
             context['tomos'] = tomos
@@ -113,7 +111,7 @@ class MangaDetailView(DetailView):
         if 'frontend_permission' not in context:
             context['frontend_permission'] = frontend_permission(self)
 
-        puntaje = str(round(context['manga'].puntaje, 2)).replace(',', '.')
+        puntaje = str(round(context['manga'].puntaje, 1)).replace(',', '.')
         context['manga'].puntaje = puntaje
         return context
 

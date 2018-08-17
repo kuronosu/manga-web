@@ -8,25 +8,6 @@
 <link rel="stylesheet" href="{% static 'css/manga_detail.css' %}">
 {% endblock static_files %}
 
-{% block content %}
-<div id="detalles">
-
-  <h1>{{ manga.title }}</h1>
-  <img src="{{ manga.image.url }}" alt="" style="max-width: 190px;max-height: 260px;">
-  <p>{{manga.description}}</p>
-  <p>{{ manga.state }}</p>
-  <p>{{ manga.author }}</p>
-  {% if manga.puntaje == 0 %}
-  <p id="puntaje">Sin votos</p>
-  {% else %}
-  <p id='puntaje'>{{ manga.puntaje }}</p>
-  {% endif %}
-  <p>{{ manga.published_date }}</p>
-  <span>Generos: </span><ul>
-    {% for i in manga.genres.all %}
-    <li>{{ i }}</li>
-    {% endfor %}
-  </ul>
   {% if frontend_permission %}
   {% if manga.verify %}
   <p>Verificado</p>
@@ -36,48 +17,91 @@
   <a href="{% url 'manageManga:manga_update' slug=manga.slug %}">Editar</a>
   <a href="{% url 'manageManga:manga_delete' slug=manga.slug %}">Eliminar</a><br>
   {% endif %}
-</div>
 
-<div>
-  <span>Tomos: </span><ul id="tomos">
-    {% csrf_token %}
-    {% for tomo in tomos %}
-    {% if tomo.number == -1 %}
-    <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">Sin Tomo</a></li>
-    {% else %}
-    <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">{{tomo.number}}</a></li>
-    <div>
-      <a href="{% url 'manageManga:tomo_update' manga_slug=manga.slug tomo_number=tomo.number %}">Update {{tomo.number}}</a>
-      <a href="{% url 'manageManga:tomo_delete' manga_slug=manga.slug tomo_number=tomo.number %}">Delete {{tomo.number}}</a>
+{% block content %}
+<div id="details">
+  <div class="row">
+    <div class="col-md-3 col-sm-12 p-2 card bg-secondary border-0">
+      <img src="{{ manga.image.url }}" alt="" class="card-img-top px-1" style="border-radius: 0.5rem;">
+      <div class="py-1 text-white card-body ">
+        <p class="mb-0 card-text">Estado: {{ manga.state }}</p>
+        <p class="mb-0 card-text">Autor: {{ manga.author }}</p>
+        <div class="mb-0 card-text">
+          {% if manga.puntaje == 0 %}Puntuacion:<span id="puntaje">Sin votos</span>
+          {% else %}Puntuacion: <span id="puntaje">{{ manga.puntaje }}</span>
+          {% endif %}
+          <div class="mt-1" id="votes" action-url="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">
+            {% csrf_token %}
+            {% for i in form_vote_files %}
+            {% if i == vote_form.vote_value.value %}
+            <span id="vote_{{i}}" class="fa-stack fa-1x vote text-warning">
+              <i class="fa fa-star fa-stack-2x"></i>
+              <i class="fa fa-stack-1x text-white">{{i}}</i>
+            </span>
+            {% else %}
+            <span id="vote_{{i}}" class="fa-stack fa-1x vote text-white">
+              <i class="fa fa-star fa-stack-2x text-dark"></i>
+              <i class="fa fa-stack-1x">{{i}}</i>
+            </span>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% comment "" %}<p class="card-text mb-1">Fecha de subida: {{ manga.published_date_in_page }}</p>{% endcomment %}
+        {% if frontend_permission %}
+        {% if manga.verify %}
+        <span>Verificado</span>
+        {% else %}
+        <span>No verificado</span>
+        {% endif %}
+        <a class="text-success" href="{% url 'manageManga:manga_update' slug=manga.slug %}">Editar</a>
+        <a class="text-danger" href="{% url 'manageManga:manga_delete' slug=manga.slug %}">Eliminar</a><br>
+        {% endif %}
+        <div class="card-text mb-0">
+          <p class="mb-0">Generos: </p>
+          <ul class="mb-0">
+            {% for i in manga.genres.all %}
+            <li class="">{{ i.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
-    {% endif %}
-    {% endfor %}
-    {% if frontend_permission %}
-    <a href="{% url 'manageManga:tomo_add' manga_slug=manga.slug  %} ">Añadir tomo</a>
-    {% endif %}
-  </ul>
-
-</div>
-<div>
-  <div id="chapters" class="chapters"></div>
-  {% if frontend_permission %}
-  <div><a id="add_chapter" href="">Añadir un capitulo a este tomo.</a></div>
-  {% endif %}
-</div>
-
-<div id="votes" action-url="{% url 'manageManga:vote_manga' manga_slug=manga.slug %}">
-  {% csrf_token %}
-  {% for i in form_vote_files %}
-  {% if i == vote_form.vote_value.value %}
-  <div id="vote_{{i}}" class="vote_selected vote">
-    <span>{{i}}</span>
+    <div class="col-md-9 col-sm-12 p-0 pl-sm-0 pl-md-2">
+      <div>
+        <h1 >{{ manga.title }}</h1>
+        <p  class="synopsis">{{manga.description}}</p>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <span>Tomos: </span>
+          <ul id="tomos">
+          {% csrf_token %}
+          {% for tomo in tomos %}
+          {% if tomo.number == -1 %}
+          <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">Sin Tomo</a></li>
+          {% else %}
+          <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">{{tomo.number}}</a></li>
+          <div>
+            <a href="{% url 'manageManga:tomo_update' manga_slug=manga.slug tomo_number=tomo.number %}">Update {{tomo.number}}</a>
+            <a href="{% url 'manageManga:tomo_delete' manga_slug=manga.slug tomo_number=tomo.number %}">Delete {{tomo.number}}</a>
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% if frontend_permission %}
+          <a href="{% url 'manageManga:tomo_add' manga_slug=manga.slug  %} ">Añadir tomo</a>
+          {% endif %}
+          </ul>
+        </div>
+        <div class="col">
+            <div id="chapters" class="chapters mt-4"></div>
+            {% if frontend_permission %}
+            <div><a id="add_chapter" href="">Añadir un capitulo a este tomo.</a></div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
   </div>
-  {% else %}
-  <div id="vote_{{i}}" class="vote">
-    <span>{{i}}</span>
-  </div>
-  {% endif %}
-  {% endfor %}
 </div>
 {% endblock content %}
 

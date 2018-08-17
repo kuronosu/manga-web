@@ -1,26 +1,6 @@
-.vote_selected{
-    background-color: red;
-}
-#votes{
-    display: flex;
-    justify-content: left;
-    align-content: center;
-    flex-direction: row;
-}
-.vote{
-    border: solid red 1px;
-    height: 35px;
-    width: 35px;
-    text-align: center;
-    border-radius: 100%;
-    margin: 3px;
-}
-main{
-    display: flex;
-}
-#detalles{
-    max-width: 20%;
-}
 p{
     word-wrap: break-word;
+}
+.synopsis{
+    font-size: 1.2rem;
 }
