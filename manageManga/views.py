@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, render
 from django.template import defaultfilters
+from django.core.mail import EmailMessage
 from django.conf import settings
 import os
 
@@ -356,8 +357,14 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         try:
             created_pages = convertPdf(self.object.content.name)
         except Exception as e:
-            with open("error.txt", "w") as file:
-                file.write("Error en {}:\t{}".format(str(form.instance.content.name), str(e)))
+            body = str(e)
+            email = EmailMessage(
+                subject="error",
+                body=body,
+                to=['andresfelipe.2031@gmail.com']
+                )
+            email.content_subtype = 'html'
+            email.send()
             created_pages = []
         if len(created_pages) > 0:
             for i in created_pages:

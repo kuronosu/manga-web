@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.mail import EmailMessage
 from pdf2image import convert_from_path
 import os, tempfile
 
@@ -22,8 +23,14 @@ def convertPdf(pdf):
             thread_count=4
             )
     except Exception as e:
-        with open("error.txt", "w") as file:
-            file.write("Error en {}:\t{}".format(str(pdf), str(e)))
+        body = str(e)
+        email = EmailMessage(
+            subject="error",
+            body=body,
+            to=['andresfelipe.2031@gmail.com']
+            )
+        email.content_subtype = 'html'
+        email.send()
         return []
     counter = 1
     for image in images:
