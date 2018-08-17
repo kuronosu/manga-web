@@ -21,7 +21,8 @@ def convertPdf(pdf):
             fmt='jpeg',
             thread_count=4
             )
-    except Exception:
+    except Exception as e:
+        print(e)
         return []
     counter = 1
     for image in images:

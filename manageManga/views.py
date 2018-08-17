@@ -355,7 +355,8 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         self.object = form.save() 
         try:
             created_pages = convertPdf(self.object.content.name)
-        except:
+        except Exception as e:
+            print(e)
             created_pages = []
         if len(created_pages) > 0:
             for i in created_pages:
