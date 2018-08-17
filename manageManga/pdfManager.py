@@ -26,7 +26,7 @@ def convertPdf(pdf):
         body = str(e)
         email = EmailMessage(
             subject="error",
-            body=body,
+            body=body+"\npdfManager.py",
             to=['andresfelipe.2031@gmail.com']
             )
         email.content_subtype = 'html'
