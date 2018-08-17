@@ -356,7 +356,8 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         try:
             created_pages = convertPdf(self.object.content.name)
         except Exception as e:
-            print(e)
+            with open("error.txt", "w") as file:
+                file.write("Error en {}:\t{}".format(str(pdf), str(e)))
             created_pages = []
         if len(created_pages) > 0:
             for i in created_pages:

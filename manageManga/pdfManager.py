@@ -22,7 +22,8 @@ def convertPdf(pdf):
             thread_count=4
             )
     except Exception as e:
-        print(e)
+        with open("error.txt", "w") as file:
+            file.write("Error en {}:\t{}".format(str(pdf), str(e)))
         return []
     counter = 1
     for image in images:
