@@ -82,10 +82,12 @@
           <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">Sin Tomo</a></li>
           {% else %}
           <li><a href="{% url 'manageManga:tomo_detail' manga_slug=manga.slug tomo_number=tomo.number %}">{{tomo.number}}</a></li>
+          {% if frontend_permission %}
           <div>
             <a href="{% url 'manageManga:tomo_update' manga_slug=manga.slug tomo_number=tomo.number %}">Update {{tomo.number}}</a>
             <a href="{% url 'manageManga:tomo_delete' manga_slug=manga.slug tomo_number=tomo.number %}">Delete {{tomo.number}}</a>
           </div>
+          {% endif %}
           {% endif %}
           {% endfor %}
           {% if frontend_permission %}
