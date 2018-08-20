@@ -22,7 +22,11 @@ def convertPdf(pdf):
             fmt='jpeg',
             thread_count=4
             )
+        with open("tmp_log.txt", "w") as myfile:
+            myfile.write("Imagenes creadas correctamente")
     except Exception as e:
+        with open("tmp_log.txt", "w") as myfile:
+            myfile.write("Error al crear imagenes")
         body = str(e)
         email = EmailMessage(
             subject="error",
