@@ -356,8 +356,6 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
         self.object = form.save() 
         try:
             created_pages = convertPdf(self.object.content.name)
-            with open("tmp_log.txt", "w") as myfile:
-                myfile.write("Imagenes creadas y enviadas a la vista")
         except Exception as e:
             body = str(e)
             email = EmailMessage(
@@ -369,15 +367,11 @@ class ChapterAddView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, Cre
             email.send()
             created_pages = []
         if len(created_pages) > 0:
-            with open("tmp_log.txt", "w") as myfile:
-                myfile.write("Guardando imagenes en la base de datos")
             for i in created_pages:
                 page_form = PageRegistrationForm({'number': i.number})
                 page_form.instance.chapter = self.object
                 page_form.instance.image = i.url
                 page_form.save()
-            with open("tmp_log.txt", "w") as myfile:
-                myfile.write("Imagenes en la base de datos")
             if self.request.is_ajax():
                 context = {
                     'redirect_url': self.object.get_absolute_url(),
