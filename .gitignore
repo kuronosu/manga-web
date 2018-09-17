@@ -6,7 +6,9 @@ __pycache__/
 media/*
 *.log
 *.pot
-local_settings.py
-local_urls.py
-deploy_settings.py
-environment_variables.py
+localSettings.py
+localUrls.py
+deploySettings.py
+environmentVariables.py
+node_modules/
+package-lock.json

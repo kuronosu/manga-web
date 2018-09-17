@@ -26,7 +26,7 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 try:
-    from .local_urls import LOCAL_URLS
+    from .localUrls import LOCAL_URLS
     urlpatterns  += LOCAL_URLS
 except Exception:
     pass

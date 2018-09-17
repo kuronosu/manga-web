@@ -1,0 +1,16 @@
+.NavbarHeader {
+    margin: 2px;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+}
+.NavbarHeader a {
+    font-size: 2rem !important;
+}
+@media (max-width: 992px){
+    .NavbarHeader {
+        width: 100%;
+    }
+}

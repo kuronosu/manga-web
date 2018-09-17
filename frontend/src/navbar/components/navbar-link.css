@@ -1,0 +1,18 @@
+.NavbarLink{
+    color: inherit;
+    padding-right: 0;
+    padding-left: 0;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+}
+.NavbarLink:hover {
+    text-decoration: none;
+    color: #aaa;
+}
+@media (min-width: 992px){
+    .NavbarLink{
+        padding-right: .5rem;
+        padding-left: .3rem;
+    }
+}

@@ -8,8 +8,9 @@
         <title>{% block title %}Tu Manga{% endblock title %}</title>
         <!-- css files -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
         {% block css %}{% endblock css %}
         <!-- script -->
         
@@ -19,9 +20,13 @@
         {% block static_files %}{% endblock static_files %}
     </head>
     <body>
+        <noscript>
+            Please active javascript in this site
+        </noscript>
         <header>
             {% block header %}
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2" role="navigation">
+            <div id="app-container"></div>
+            {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2" role="navigation">
                 <div class="container">
                     <a class="navbar-brand  mb-0 h1" href="{% url "home" %}"> Manga<span class="sr-only">(current)</span></a>
                     <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar"  aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,8 +56,8 @@
                                 <div class="input-group">
                                     <input type="search" class="form-control form-control-sm my-round-left" maxlength="100" placeholder="Search" name="search" id="id_search" aria-label="Search">
                                     <div class="input-group-append">
-                                        {% comment %} <input class="btn btn-sm btn-secondary my-2 my-sm-0 fa-search" type="submit" value="&#10140;"/> {% endcomment %}
-                                        {% comment %} <button class="btn btn-sm btn-secondary my-2 my-sm-0 fa-search my-round-right" type="submit"></button> {% endcomment %}
+                                        <input class="btn btn-sm btn-secondary my-2 my-sm-0 fa-search" type="submit" value="&#10140;"/>
+                                        <button class="btn btn-sm btn-secondary my-2 my-sm-0 fa-search my-round-right" type="submit"></button>
                                         <button class="btn btn-sm btn-secondary my0 fa-search my-round-right" type="submit"></button>
                                     </div>
                                 </div>
@@ -90,21 +95,41 @@
                         </ul>
                     </div>
                 </div>
-            </nav>
+            </nav> {% endcomment %}
             {% endblock header %}
         </header>
         <!--Content-->
-        <div class="container">
+        <section class="container">
             <main>
                 {% block content %}{% endblock content %}
             </main>
-        </div>
+        </section>
        <!--footer -->
        <footer class="mt-4">
            {% block footer %}{% endblock footer %}
         </footer>
         
+        <script>
+            const data = {
+                urls: {
+                    home: '{% url "home" %}',
+                    mangaList: '{% url "manageManga:list_of_mangas" %}',
+                    mangaAdd: '{% url "manageManga:manga_add" %}',
+                    accountsLogin : '{% url "accounts:login" %}?next={{request.path}}',
+                    accountsSignup: '{% url "accounts:singup" %}',
+                    accountsLogout: '{% url "accounts:logout" %}?next={{request.path}}',
+                    accountsPasswordReset: '{% url "accounts:password_reset" %}'
+                },
+                user: {
+                    username: {% if user.is_authenticated %}'{{ user.username }}'{% else %}null{% endif %},
+                    isAthenticated : {% if user.is_authenticated %}true{% else %}false{% endif %}
+                },
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+            window.backendData = data
+        </script>
         <script src="{% static 'js/app.js' %}"></script>
+        <script src="{% static 'js/base.js' %}"></script>
         {% block javascript %}{% endblock javascript %}
     </body>
 </html>
