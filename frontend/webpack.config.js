@@ -16,7 +16,7 @@ module.exports = (env) => {
   return {
 
     entry: {
-      base: path.resolve(__dirname, 'src/entries/base.js'),
+      app: path.resolve(__dirname, 'src/entries/app.js'),
     },
     output: {
       path: path.resolve(__dirname, '..', 'static'),

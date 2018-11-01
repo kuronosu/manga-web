@@ -1,0 +1,11 @@
+.SpaceBetween{
+    justify-content: space-between;
+    width: 100%;
+}
+.NavbarGroup{
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+}

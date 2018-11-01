@@ -1,0 +1,9 @@
+.Form{
+    padding: .7rem;
+    cursor: default;
+}
+.ErrorField{
+    color: #da0014;
+    font-size: .9rem;
+    box-sizing: unset;
+}

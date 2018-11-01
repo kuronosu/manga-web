@@ -160,4 +160,4 @@ class NoEditTomo(object):
                 raise Http404("Este tomo no se puede modificar.")
         except ValueError:
             pass
-        return super(NoEditTomo, self).dispatch(request, *args, **kwargs)
+        return super(NoEditTomo, self).dispatch(request, *args, **kwargs) #pylint: disable=E1101

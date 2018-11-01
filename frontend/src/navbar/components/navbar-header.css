@@ -8,8 +8,12 @@
 }
 .NavbarHeader a {
     font-size: 2rem !important;
+    color: white !important;
 }
-@media (max-width: 992px){
+.NavbarHeader a:hover {
+    color: white !important;
+}
+@media (max-width: 1000px){
     .NavbarHeader {
         width: 100%;
     }

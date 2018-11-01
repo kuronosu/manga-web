@@ -4,8 +4,3 @@
     color: white;
     font-size: 1.8rem;
 }
-@media (min-width: 992px){
-    .NavbarToggleButton {
-        display: none;
-    }
-}

@@ -1,0 +1,10 @@
+.SmallBlueText a{
+    color: #007bff;
+    font-size: .9rem;
+    box-sizing: unset;
+}
+.SmallBlueText a:hover{
+    color: #007bff;
+    font-size: .9rem;
+    box-sizing: unset;
+}

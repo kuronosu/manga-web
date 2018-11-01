@@ -124,12 +124,12 @@
                     username: {% if user.is_authenticated %}'{{ user.username }}'{% else %}null{% endif %},
                     isAthenticated : {% if user.is_authenticated %}true{% else %}false{% endif %}
                 },
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+                csrftoken: '{{ csrf_token }}'
             }
             window.backendData = data
         </script>
-        <script src="{% static 'js/app.js' %}"></script>
         <script src="{% static 'js/base.js' %}"></script>
+        <script src="{% static 'js/app.js' %}"></script>
         {% block javascript %}{% endblock javascript %}
     </body>
 </html>

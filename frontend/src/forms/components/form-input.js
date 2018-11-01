@@ -7,7 +7,7 @@ const FormInput = props => {
     <FormGroup>
       <label htmlFor={props.id} >{props.label}</label>
       <input
-        className={'FormControl'}
+        className='FormControl'
         type={props.type}
         name={props.name}
         id={props.id}

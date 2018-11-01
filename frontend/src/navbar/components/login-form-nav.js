@@ -1,5 +1,5 @@
 import React from 'react'
-import LoginForm from '../../widgets/components/login-form';
+import LoginForm from '../../forms/components/login-form';
 import './login-form-nav.css'
 
 const LoginFormNav = props => (
@@ -9,6 +9,8 @@ const LoginFormNav = props => (
       signUp={props.signUp}
       passwordReset={props.passwordReset}
       csrfmiddlewaretoken={props.csrfmiddlewaretoken}
+      errorFields={[]}
+      isNav
     />
   </div>
 )

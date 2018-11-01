@@ -4,3 +4,27 @@
     padding: 10px;
     line-height: 1;
 }
+.NavbarLayout .container{
+    display: flex;
+}
+.NavbarLayout a{
+    padding-right: 0;
+    padding-left: 0;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+}
+.NavbarLayout a:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+}
+.activeLink{
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+@media (min-width: 992px){
+    .NavbarLayout a{
+        padding-right: .5rem;
+        padding-left: .3rem;
+    }
+}

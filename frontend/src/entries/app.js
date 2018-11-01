@@ -1,11 +1,14 @@
 import React from "react"
 import { render } from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
 
-import Base from '../pages/containers/base'
+import App from "../pages/containers/app"
 
 const appContainer = document.getElementById('app-container')
 const data = window.backendData
 
 render(
-  <Base data={data}/>, appContainer
+  <BrowserRouter>
+    <App data={data}/>
+  </BrowserRouter>, appContainer
 )

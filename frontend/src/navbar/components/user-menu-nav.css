@@ -2,16 +2,15 @@
     margin: 0;
     padding: 0;
 }
-.UserMenuNav .NavbarLink{
+.UserMenuNav a{
+    color: black;
     padding-bottom: .75rem;
 }
 .UserMenuNav .ListItem{
     padding: 0;
 }
-.UserMenuNav .NavbarLink:hover{
-    color: #067cff
-}
-.UserMenuNav .NavbarLink:hover{
+.UserMenuNav a:hover{
+    color: #067cff;
     background-color: rgba(0, 0, 0, .075);
 }
 .UserMenuNav .ListLayout{

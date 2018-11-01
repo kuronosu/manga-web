@@ -1,10 +1,8 @@
-/* ListItem */
 .ListItem{
     position: relative;
     display: block;
     padding: 0.75rem 1.25rem;
     margin-bottom: -1px;
-    /* background-color: #fff; */
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .ListItem:first-child {
@@ -24,12 +22,6 @@
     color: #6c757d;
     background-color: #fff;
 }
-/* .ListItem.active {
-    z-index: 2;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-} */
 .ListLayoutFlush .ListItem {
     border-right: 0;
     border-left: 0;
@@ -41,8 +33,3 @@
 .ListLayoutFlush:last-child .ListItem:last-child {
     border-bottom: 0;
 }
-/* .ListItem.active {
-    color: #fff;
-    background-color: #004085;
-    border-color: #004085;
-} */

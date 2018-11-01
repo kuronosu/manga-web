@@ -2,6 +2,7 @@
 *.py[cod]
 __pycache__/
 .vscode
+venv
 *.sqlite3
 media/*
 *.log

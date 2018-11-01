@@ -9,6 +9,7 @@ export default class List extends Component {
     })
   }
   render() {
+    let c = 0
     return (
       <ListLayout
         type={this.state.type}
@@ -16,10 +17,11 @@ export default class List extends Component {
       >
       {
         this.props.children.length ?
+
           this.props.children.map(element => (
             element &&
               <ListItem
-                key={element.props.id}
+                key={`key_${c++}_${this.props.name}`}
               >
                 {element}
               </ListItem>
