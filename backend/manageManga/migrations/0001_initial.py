@@ -4,7 +4,7 @@ from django.conf import settings
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import manageManga.funct
+import manageManga.util
 
 
 class Migration(migrations.Migration):
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name='Chapter',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.FileField(help_text='Este no se puede modificar luego.', upload_to=manageManga.funct.chapters_directory_path, verbose_name='PDF field')),
+                ('content', models.FileField(help_text='Este no se puede modificar luego.', upload_to=manageManga.util.chapters_directory_path, verbose_name='PDF field')),
                 ('user_chapter_number', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)], verbose_name='Chapter number')),
                 ('name', models.CharField(blank=True, max_length=100, verbose_name='Name')),
                 ('slug', models.SlugField(default='djangodbmodelsfieldsintegerfield', verbose_name='Slug')),

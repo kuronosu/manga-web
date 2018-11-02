@@ -18,10 +18,11 @@ from django.shortcuts import get_object_or_404, render
 from django.template import defaultfilters
 from django.core.mail import EmailMessage
 from django.conf import settings
+
 import os
 
 from .models import Manga, Chapter, Voto, Tomo, Page
-from .funct import filter_obj_model, frontend_permission
+from .util import filter_obj_model, frontend_permission
 from .pdfManager import convertPdf
 from .mixins import (
     FilterMixin,
@@ -29,7 +30,8 @@ from .mixins import (
     UserPermissionsMixin,
     ChapterMixin,
     TomoMixin,
-    NoEditTomo
+    NoEditTomo,
+    BackendRenderMixin
     )
 from .forms import (
     FilterForm,
@@ -46,9 +48,12 @@ from .forms import (
     StaffTomoEditForm
     )
 
-class HomeView(TemplateView):
+class HomeView(BackendRenderMixin, TemplateView):
     """Vista del home"""
     template_name = "home.html"
+    
+    def serialize_context_data(self, context):
+        return {'view': 'Home'}
 
 ######################
 #Vistas de los mangas#
@@ -101,8 +106,7 @@ class MangaDetailView(DetailView):
         if 'form_vote_files' not in context:
             context['form_vote_files'] = list(range(1, 6))
         if 'tomos' not in context:
-            tomos = filter_obj_model(Tomo, manga=self.object)
-            context['tomos'] = tomos
+            context['tomos'] = filter_obj_model(Tomo, manga=self.object)
         if 'vote_form' not in context:
             try:
                 vote_object = get_object_or_404(Voto ,manga=self.object,author=self.request.user)
@@ -514,54 +518,6 @@ class ChapterUpdateView(LoginRequiredMixin, ChapterMixin, UserPermissionsMixin, 
         form.instance.author = self.request.user
         form.instance.content = self.get_object().content
         return super(ChapterUpdateView, self).form_valid(form)
-    
-    # def form_valid(self, form):
-    #     estado_inicial = self.get_object()
-    #     manga_slug = self.kwargs['manga_slug']
-    #     tomo_number = self.kwargs['tomo_number']
-    #     manga = get_object_or_404(Manga, slug=manga_slug)
-        
-    #     if form.instance.content.name != self.get_object().content.name:
-                
-    #         path_lastfile = self.get_object().content.name
-    #         print(path_lastfile.split('/')[-1])
-    #         # raise Exception
-    #         tomo = get_object_or_404(Tomo, manga=manga, number=tomo_number)
-    #         form.instance.manga = manga
-    #         form.instance.tomo = tomo
-    #         form.instance.author = self.request.user
-    #         print(type(form.instance.content))
-    #         form.instance.content.name = defaultfilters.slugify(form.instance.content.name)
-    #         print(form.instance.content)
-    #         # raise Exception
-    #         chapter = self.object
-    #         pages = filter_obj_model(Page, chapter=chapter)
-    #         self.object = form.save()
-    #         created_pages = extract_page(self.object.content.name)
-    #         if created_pages:
-    #             for i in pages:
-    #                 i.delete()
-    #             for i in created_pages:
-    #                 page_form = PageRegistrationForm({'number': int(i.number)})
-    #                 page_form.instance.chapter = self.object
-    #                 page_form.instance.image = i.path.split('media/')[-1:][0] + i.formato
-    #                 page_form.save()
-    #             os.remove(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, path_lastfile)))
-    #             return HttpResponseRedirect(self.get_success_url())
-    #         else:
-    #             from django.core.files import File
-    #             a = self.get_object()
-    #             a.content.save(path_lastfile.split('/')[-1], File(open(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, path_lastfile)), 'rb')))
-    #             os.remove(os.path.join(settings.BASE_DIR, os.path.join(settings.MEDIA_ROOT, path_lastfile)))
-    #             form.add_error('content', _('Error al procesar el archivo'))
-    #             context = self.get_context_data()
-    #             context['form'] = form
-    #             return self.render_to_response(context)
-    #     else:
-    #         self.object = form.save()
-
-    #     return HttpResponseRedirect(self.get_success_url())
-
 
 class ChapterDeleteView(LoginRequiredMixin,UserPermissionsMixin , DeleteView):
     model = Chapter

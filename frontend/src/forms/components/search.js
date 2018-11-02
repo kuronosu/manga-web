@@ -1,5 +1,5 @@
 import React from 'react'
-import Icon from '.././icons/components/icon'
+import Icon from '../../icons/components/icon'
 import './search.css'
 
 // function Search(props) {

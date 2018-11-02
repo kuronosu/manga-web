@@ -3,10 +3,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.template import defaultfilters
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.conf import settings
+
+import requests
 
 from .models import Manga, Chapter, Voto, Tomo, Page
-from .funct import frontend_permission, filter_obj_model
+from .util import frontend_permission, filter_obj_model, base_data_to_render
 from .forms import PageRegistrationForm
 
 class FilterMixin(object):
@@ -161,3 +164,16 @@ class NoEditTomo(object):
         except ValueError:
             pass
         return super(NoEditTomo, self).dispatch(request, *args, **kwargs) #pylint: disable=E1101
+
+class BackendRenderMixin:
+    def get(self, request, *args, **kwargs):
+        try:
+            context = self.get_context_data(**kwargs)
+            context.update(self.serialize_context_data(context))
+            context.update(base_data_to_render(request))
+            node_request = requests.post(settings.NODE_SERVER, json=context)
+            if node_request.status_code == 200:
+                return HttpResponse(node_request)
+        except Exception:
+            pass
+        return super(BackendRenderMixin, self).get(request, *args, **kwargs)

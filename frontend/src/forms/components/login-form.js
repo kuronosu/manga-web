@@ -41,14 +41,10 @@ const LoginForm = props => {
       <FormButton/>
       <div className='NavbarGroup SpaceBetween'>
         <small className='SmallBlueText'>
-          <Link
-            to={props.signUp}
-          >Registrate</Link>
+          <a href={props.signUp}>Registrate</a>
         </small>
         <small className='SmallBlueText'>
-          <Link
-            to={props.passwordReset}
-          >¿Olvidaste tu contraseña?</Link>
+          <a href={props.passwordReset}>¿Olvidaste tu contraseña?</a>
         </small>
       </div>
     </form>

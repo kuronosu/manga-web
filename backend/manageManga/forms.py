@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 from .models import Manga, Chapter, Voto, Tomo, Page
-from .funct import filter_obj_model
+from .util import filter_obj_model
 # from django.utils.translation import ugettext, ugettext_noop
 
 def set_field_html_name(obj, new_name):
@@ -67,7 +67,7 @@ class SearchForm(forms.ModelForm):
         self.fields['slug'].required = False
         self.fields['slug'].label = _('Search')
         self.fields['slug'].widget.attrs['placeholder'] = _('Search')
-        set_field_html_name(self.fields['slug'], 'search')
+        # set_field_html_name(self.fields['slug'], 'search')
 
 #############################
 # Formularios de los mangas #

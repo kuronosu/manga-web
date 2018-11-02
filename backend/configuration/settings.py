@@ -180,6 +180,9 @@ LOGIN_REDIRECT_URL = reverse_lazy('home')
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_CASE_SENSITIVE = 'both'
 
+# Direccion del servidor de node js que realiza el renderizado en backend
+NODE_SERVER = "http://localhost:3000"
+
 try:
    from configuration.localSettings import * #pylint: disable=W0614
 except Exception as e:
@@ -189,4 +192,7 @@ try:
    from configuration.deploySettings import *
 except Exception as e:
     if DEBUG == False:
-        raise EnvironmentError('Please create a deploy settings')
+        raise EnvironmentError('Please check or create a deploy settings.')
+
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3' and DEBUG is False:
+    raise EnvironmentError('Please check the database settings.')

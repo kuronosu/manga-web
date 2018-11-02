@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 import os
 
-from .funct import filter_obj_model, chapters_directory_path
+from .util import filter_obj_model, chapters_directory_path
 
 class Genre(models.Model):
     """
