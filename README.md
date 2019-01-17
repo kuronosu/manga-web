@@ -19,7 +19,7 @@ $ npm install # or yarn add
 3. Create local settings files for django in ./backend/configuration
 
 **environmentVariables.py**
-```
+```py
 import os
 
 os.environ['SECRET_KEY'] = 'your secret key'
@@ -31,11 +31,11 @@ os.environ['DBNAME'] = 'your database name'
 os.environ['DBPASS'] = 'your database password'
 ```
 **localSettings.py**
-```
+```py
 DEBUG = True
 ```
 **localUrls.py**
-```
+```py
 from django.urls import path
 from django.contrib import admin
 
