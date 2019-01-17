@@ -7,15 +7,22 @@ import UserMenuNav from './user-menu-nav'
 
 import './default-view.css'
 
-const DefaultView = ({user, urls, csrftoken}) => {
+const DefaultView = props => {
+  const {user, urls, csrftoken} = props
   return (
     <div className='NavbarGroup SpaceBetween'>
       <div className="NavbarGroup">
-        <a href={urls.mangaList}>Lista de mangas</a>
+        {
+          props.menuItems.map(item => {
+            if (item.show)
+              return <a href={item.url}>{item.name}</a>
+          })
+        }
+        {/* <a href={urls.mangaList}>Lista de mangas</a>
         {
           user.isAthenticated ?
           <a href={urls.mangaAdd}>Nuevo manga</a>:''
-        }
+        } */}
       </div>
       <div className='NavbarGroup'>
         <Search
@@ -32,8 +39,7 @@ const DefaultView = ({user, urls, csrftoken}) => {
             />
             :
             <UserMenuNav
-              user={user}
-              urls={urls}
+              loggedMenu={props.loggedMenu}
             />
           }
         </NavDropdown>

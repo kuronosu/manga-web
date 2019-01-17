@@ -12,4 +12,3 @@ localUrls.py
 deploySettings.py
 environmentVariables.py
 node_modules/
-package-lock.json

@@ -1,12 +1,11 @@
 import React from 'react'
-import Container from '../../widgets/components/container'
 import './navbar-layout.css'
 
 const NavbarLayout = props => (
   <nav className='NavbarLayout'>
-    <Container>
+    <div className='Container'>
       {props.children}
-    </Container>
+    </div>
   </nav>
 )
 

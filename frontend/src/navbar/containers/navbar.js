@@ -25,7 +25,7 @@ class NavBar extends Component {
             shouldShowMobileView ? (
               <MovileView user={user} urls={urls} csrftoken={csrftoken} />
             ) : (
-              <DefaultView user={user} urls={urls} csrftoken={csrftoken} />
+              <DefaultView {...this.props.data} />
             )
           }
         </MediaQuery>

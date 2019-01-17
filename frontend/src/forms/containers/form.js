@@ -5,7 +5,7 @@ const Form = props => {
   let errors = 0
   return (
     <form
-      className='Form'
+      className={`Form ${props.className}`}
       method={props.method}
       action={props.action}
       >

@@ -93,17 +93,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ['DBNAME'],
-#         'USER': os.environ['DBUSER'],
-#         'PASSWORD': os.environ['DBPASS'] ,
-#         'HOST': 'localhost',
-#         'PORT': '',                      # Set to empty string for default.
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -195,4 +184,16 @@ except Exception as e:
         raise EnvironmentError('Please check or create a deploy settings.')
 
 if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3' and DEBUG is False:
-    raise EnvironmentError('Please check the database settings.')
+    try:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': os.environ['DBNAME'],
+                'USER': os.environ['DBUSER'],
+                'PASSWORD': os.environ['DBPASS'],
+                'HOST': os.environ.get('DBHOST', 'localhost'),
+                'PORT': os.environ.get('DBPOST', '')                # Set to empty string for default.
+            }
+        }
+    except Exception:
+        raise EnvironmentError('Please check the database settings.')

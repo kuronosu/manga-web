@@ -18,8 +18,9 @@ from django.shortcuts import get_object_or_404, render
 from django.template import defaultfilters
 from django.core.mail import EmailMessage
 from django.conf import settings
+from django.core import serializers
 
-import os
+import os, json
 
 from .models import Manga, Chapter, Voto, Tomo, Page
 from .util import filter_obj_model, frontend_permission
@@ -58,17 +59,54 @@ class HomeView(BackendRenderMixin, TemplateView):
 ######################
 #Vistas de los mangas#
 ######################
+def safe_execute(function, default, exception=Exception, *args, **kwargs):
+    try:
+        return function(*args)
+    except exception:
+        return default
 
-class MangaListAndFilterView(FilterMixin, ListView):
+class MangaListAndFilterView(BackendRenderMixin, FilterMixin, ListView):
     """Vista para listar y filtrar mangas"""
     model = Manga
     template_name = 'manageManga/manga_list.html'
     context_object_name = 'mangas_list'
-    paginate_by = 30
+    paginate_by = 8
     form_classes = {
         'filter_form': FilterForm,
         'search_form': SearchForm
     }
+
+    def serialize_context_data(self, context):        
+        paginator = dict(context['paginator'].__dict__)
+        paginator.update({
+            'count': context['paginator'].count,
+            'num_pages': context['paginator'].num_pages,
+            'page_range': list(context['paginator'].page_range),
+            'object_list': json.loads(serializers.serialize('json', context['paginator'].object_list))
+        })
+
+        page_obj = dict(context['page_obj'].__dict__)
+        page_obj.update({
+            'has_previous': context['page_obj'].has_previous(),
+            'previous_page_number': safe_execute(context['page_obj'].previous_page_number, None, Exception),
+            'number': context['page_obj'].number,
+            'has_next': context['page_obj'].has_next(),
+            'next_page_number': safe_execute(context['page_obj'].next_page_number, None, Exception),
+            'paginator': paginator,
+            'object_list': json.loads(serializers.serialize('json', context['page_obj'].object_list))
+        })
+
+        object_list = json.loads(serializers.serialize('json', context['object_list']))
+
+        return {
+            'paginator': paginator,
+            'page_obj': page_obj,
+            'object_list': object_list,
+            'view': 'MangaList',
+            'mangas_list': None,
+            'filter_form': None,
+            'search_form': None,
+        }
 
 class MangaAddView(LoginRequiredMixin, CreateView):
     """Vista de para crear un manga"""

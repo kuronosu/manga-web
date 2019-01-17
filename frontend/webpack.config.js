@@ -9,7 +9,7 @@ module.exports = (env) => {
 
   if (env.NODE_ENV === 'production') {
     plugins.push(
-      new CleanWebpackPlugin(['dist'], {root: __dirname})
+      // new CleanWebpackPlugin(['dist'], {root: __dirname})
     )
   }
 
@@ -21,7 +21,7 @@ module.exports = (env) => {
     output: {
       path: path.resolve(__dirname, '..', 'static'),
       filename: 'js/[name].js',
-      publicPath: path.resolve(__dirname, 'dist')+"/",
+      publicPath: path.resolve(__dirname, '..', 'static')+"/",
       chunkFilename: 'js/[id].js',
     },
     devServer: {

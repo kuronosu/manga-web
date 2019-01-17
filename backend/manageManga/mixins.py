@@ -1,15 +1,16 @@
 """Mixins"""
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ImproperlyConfigured
 from django.template import defaultfilters
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.conf import settings
+from django.urls import reverse
 
-import requests
+import requests, json
 
 from .models import Manga, Chapter, Voto, Tomo, Page
-from .util import frontend_permission, filter_obj_model, base_data_to_render
+from .util import frontend_permission, filter_obj_model
 from .forms import PageRegistrationForm
 
 class FilterMixin(object):
@@ -20,21 +21,14 @@ class FilterMixin(object):
         state = self.request.GET.get('state', False)
         genres = self.request.GET.getlist('genres', False)
         order = self.request.GET.get('order', False)
-        queryset = None
-        if order:
-            if order == '0':
-                pass
-            else:
-                if order == '1':
-                    query = query.order_by('title')
-                if order == '-1':
-                    query = query.order_by('-title')
-                if order == '-2':
-                    query = query.order_by('published_date_in_page')
-                if order == '2':
-                    query = query.order_by('-published_date_in_page')
-        if search:
-            query = query.filter(title__icontains=search)
+        order_options = ['1', '-1', '2', '-2']
+        if order and True in [v == order for v in order_options]:
+            order = order.replace('1', 'title')
+            order = order.replace('2', 'published_date_in_page')
+            query = query.order_by(order)
+
+        query = query.filter(title__icontains=search) if search else query
+
         if state:
             try:
                 query = query.filter(state__state=int(state))
@@ -167,13 +161,58 @@ class NoEditTomo(object):
 
 class BackendRenderMixin:
     def get(self, request, *args, **kwargs):
+        response = super(BackendRenderMixin, self).get(request, *args, **kwargs)
         try:
             context = self.get_context_data(**kwargs)
             context.update(self.serialize_context_data(context))
-            context.update(base_data_to_render(request))
+            context.update(self.header_data_render(request))
             node_request = requests.post(settings.NODE_SERVER, json=context)
             if node_request.status_code == 200:
                 return HttpResponse(node_request)
-        except Exception:
-            pass
-        return super(BackendRenderMixin, self).get(request, *args, **kwargs)
+        except Exception as e:
+            print(e)
+        return response
+
+    def header_data_render(self, request, to_json=False):
+        """
+        Funcion que retorna los datos usados en el header para enviar en la peticion al servidor ssr
+        """
+        if not (hasattr(request, 'path') and isinstance(request.path, str) and hasattr(request, 'user') and hasattr(request, 'COOKIES') and isinstance(request.COOKIES, dict)):
+            raise ImproperlyConfigured("Isn't a valid request object.")
+
+        urls = {
+            'home': reverse('home'),
+            'mangaList': reverse('manageManga:list_of_mangas'),
+            'mangaAdd': reverse('manageManga:manga_add'),
+            'accountsLogin': reverse('accounts:login') + '?next={}'.format(request.path),
+            'accountsSignup': reverse('accounts:singup'),
+            'accountsLogout': reverse('accounts:logout') + '?next={}'.format(request.path),
+            'accountsPasswordReset': reverse('accounts:password_reset')
+        }
+
+        create_item = lambda name, url, url_args='', show=True, **kwargs: {'name': name, 'url': (reverse(url, kwargs=kwargs) + url_args), 'show': show}
+
+        menuItems = [
+            create_item(str(_('Lista de mangas')), 'manageManga:list_of_mangas'),
+            create_item(str(_('Añadir manga')), 'manageManga:manga_add', show=request.user.is_authenticated),
+        ]
+        loggedMenu = [
+            create_item(request.user.username, 'accounts:user_profile', username=request.user.username),
+            create_item(str(_('Editar perfil')), 'accounts:user_profile', username=request.user.username),
+            create_item(str(_('Cerrar sesion')), 'accounts:logout', '?next={}'.format(request.path)),
+        ] if request.user.is_authenticated else []
+        data = {
+            'request_url': request.path,
+            'csrftoken': request.COOKIES['csrftoken'],
+            'isLogged': request.user.is_authenticated,
+            'urls': urls,
+            'menuItems': menuItems,
+            'loggedMenu': loggedMenu,
+            'user': {
+                'username': request.user.username,
+                'isAthenticated': request.user.is_authenticated
+            }
+        }
+        if to_json:
+            return json.dumps(data)
+        return data

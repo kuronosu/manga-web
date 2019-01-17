@@ -21,30 +21,3 @@ def chapters_directory_path(instance, filename):
         instance.user_chapter_number,
         filename,
         )
-
-def base_data_to_render(request, to_json=False):
-    """
-    Funcion que retorna todos los datos usados en la peticion al servidor de backend render
-    """
-    if not (hasattr(request, 'path') and isinstance(request.path, str) and hasattr(request, 'user') and hasattr(request, 'COOKIES') and isinstance(request.COOKIES, dict)):
-        raise ImproperlyConfigured("Isn't a valid request object.")
-    data = {
-        'request_url': request.path,
-        'csrftoken': request.COOKIES['csrftoken'],
-        'urls': {
-            'home': reverse('home'),
-            'mangaList': reverse('manageManga:list_of_mangas'),
-            'mangaAdd': reverse('manageManga:manga_add'),
-            'accountsLogin': reverse('accounts:login') + '?next={}'.format(request.path),
-            'accountsSignup': reverse('accounts:singup'),
-            'accountsLogout': reverse('accounts:logout') + '?next={}'.format(request.path),
-            'accountsPasswordReset': reverse('accounts:password_reset')
-        },
-        'user': {
-            'username': request.user.username,
-            'isAthenticated': request.user.is_authenticated
-        }
-    }
-    if to_json:
-        return json.dumps(data)
-    return data

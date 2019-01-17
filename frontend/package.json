@@ -5,8 +5,9 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:dev": "webpack-dev-server --config ./webpack.dev.config.js",
+    "build:dev": "set --env.NODE_ENV=dev & webpack-dev-server --config ./webpack.dev.config.js",
     "build": "webpack",
+    "build:all": "webpack -p --env.NODE_ENV=production & webpack --env.NODE_ENV=local --config ./webpack.server.config.js",
     "build:local": "webpack --env.NODE_ENV=local",
     "build:prod": "webpack -p --env.NODE_ENV=production",
     "build:server": "webpack --env.NODE_ENV=local --config ./webpack.server.config.js",
@@ -43,6 +44,6 @@
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-router": "4.3.1",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "4.3.1"
   }
 }

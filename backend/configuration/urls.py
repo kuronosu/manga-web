@@ -20,7 +20,7 @@ from manageManga.views import HomeView
 
 
 urlpatterns = [
-    path('',HomeView.as_view(),name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('', include('accounts.urls', namespace='accounts')),
     path('manga/', include('manageManga.urls', namespace='manageManga')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
